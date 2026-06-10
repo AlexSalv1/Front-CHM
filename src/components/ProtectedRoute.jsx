@@ -1,7 +1,7 @@
 // Arquivo: frontend/src/components/ProtectedRoute.jsx
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { listarClientes } from '../api/clientesApi';
+import { verificarSessao } from '../api/authSessionApi';
 import LoadingSpinner from './LoadingSpinner';
 
 export default function ProtectedRoute({ children }) {
@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children }) {
   useEffect(() => {
     let active = true;
 
-    listarClientes()
+    verificarSessao()
       .then(() => {
         if (active) setStatus('authenticated');
       })
