@@ -6,10 +6,10 @@ export default {
     extend: {
       colors: {
         chm: {
-          bg: '#0f1419',
-          card: '#1a2332',
-          accent: '#3b82f6',
-          muted: '#64748b',
+          bg: '#101418',
+          card: '#18212b',
+          accent: '#4f8cff',
+          muted: '#8a98a8',
           whatsapp: '#25D366',
         },
       },

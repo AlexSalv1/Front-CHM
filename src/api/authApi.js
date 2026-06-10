@@ -6,6 +6,11 @@ export async function login(email, senha) {
   return data;
 }
 
+export async function register(payload) {
+  const { data } = await httpClient.post('/api/v1/auth/register', payload);
+  return data;
+}
+
 export async function logout() {
   const { data } = await httpClient.post('/api/v1/auth/logout');
   return data;
