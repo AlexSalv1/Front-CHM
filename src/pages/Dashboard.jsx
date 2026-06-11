@@ -4,6 +4,7 @@ import { buscarMetricas, listarClientes } from '../api/clientesApi';
 import HealthScoreBadge from '../components/HealthScoreBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
 import MetricCard from '../components/MetricCard';
+import useAppContext from '../hooks/useAppContext';
 import {
   buildHealthHistory,
   buildSuggestedMessage,
@@ -41,6 +42,7 @@ function MiniTrend({ cliente }) {
 }
 
 export default function Dashboard() {
+  const { canManageTeam, maskValue } = useAppContext();
   const [clientes, setClientes] = useState([]);
   const [metricas, setMetricas] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -96,12 +98,14 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link
-              to="/executivo"
-              className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
-            >
-              Dashboard executivo
-            </Link>
+            {canManageTeam && (
+              <Link
+                to="/executivo"
+                className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+              >
+                Dashboard executivo
+              </Link>
+            )}
             <Link
               to="/tarefas"
               className="rounded-md border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800"
@@ -115,13 +119,13 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           title="Risco de perda mensal"
-          value={formatCurrency(metricas.receitaMensalEmRisco)}
+          value={maskValue(formatCurrency(metricas.receitaMensalEmRisco))}
           subtitle="Receita ativa em clientes ate 60"
           accent="text-red-300"
         />
         <MetricCard
           title="Impacto anual"
-          value={formatCurrency(metricas.impactoAnualEmRisco)}
+          value={maskValue(formatCurrency(metricas.impactoAnualEmRisco))}
           subtitle="Se o risco virar cancelamento"
           accent="text-amber-300"
         />
@@ -182,7 +186,7 @@ export default function Dashboard() {
                         ))}
                       </div>
                       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-chm-muted">
-                        <span>{formatCurrency(cliente.valorMensalidade)} / mes</span>
+                        <span>{maskValue(formatCurrency(cliente.valorMensalidade))} / mes</span>
                         <a
                           href={buildWhatsAppUrl(cliente.telefone, message)}
                           target="_blank"

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { atualizarBrandingEmpresa, buscarBrandingEmpresa } from '../api/empresaApi';
 import LoadingSpinner from '../components/LoadingSpinner';
+import useAppContext from '../hooks/useAppContext';
 
 const defaultForm = {
   nomeComercial: '',
@@ -24,6 +25,7 @@ function readImageAsDataUrl(file) {
 }
 
 export default function Configuracoes() {
+  const { session, canManageTeam } = useAppContext();
   const [form, setForm] = useState(defaultForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -103,6 +105,13 @@ export default function Configuracoes() {
     }
   }
 
+  if (session && !canManageTeam) {
+    return (
+      <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
+        Seu usuario nao tem acesso as configuracoes da marca.
+      </div>
+    );
+  }
   if (loading) return <LoadingSpinner label="Carregando configuracoes..." />;
 
   return (

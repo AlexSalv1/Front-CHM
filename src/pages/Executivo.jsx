@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { buscarMetricas, listarClientes } from '../api/clientesApi';
 import LoadingSpinner from '../components/LoadingSpinner';
 import MetricCard from '../components/MetricCard';
+import useAppContext from '../hooks/useAppContext';
 import { formatCurrency, getCancellationPatterns } from '../utils/retentionInsights';
 
 export default function Executivo() {
+  const { session, canManageTeam, maskValue } = useAppContext();
   const [clientes, setClientes] = useState([]);
   const [metricas, setMetricas] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,6 +39,13 @@ export default function Executivo() {
 
   if (loading) return <LoadingSpinner label="Carregando dashboard executivo..." />;
   if (error) return <p className="text-center text-red-400">{error}</p>;
+  if (session && !canManageTeam) {
+    return (
+      <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
+        Seu usuario nao tem acesso ao dashboard executivo.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-7">
@@ -59,13 +68,13 @@ export default function Executivo() {
         />
         <MetricCard
           title="Receita protegida"
-          value={formatCurrency(metricas.receitaProtegidaEstimada)}
+          value={maskValue(formatCurrency(metricas.receitaProtegidaEstimada))}
           subtitle="Estimativa com recuperacao de 35%"
           accent="text-emerald-300"
         />
         <MetricCard
           title="Risco este mes"
-          value={formatCurrency(metricas.receitaMensalEmRisco)}
+          value={maskValue(formatCurrency(metricas.receitaMensalEmRisco))}
           subtitle="Mensalidade em clientes frageis"
           accent="text-amber-300"
         />
@@ -83,7 +92,7 @@ export default function Executivo() {
             <div className="rounded-md bg-slate-950/65 p-5">
               <p className="text-sm text-chm-muted">Impacto anual se nada for feito</p>
               <p className="mt-3 text-3xl font-bold text-red-200">
-                {formatCurrency(metricas.impactoAnualEmRisco)}
+                {maskValue(formatCurrency(metricas.impactoAnualEmRisco))}
               </p>
             </div>
             <div className="rounded-md bg-slate-950/65 p-5">

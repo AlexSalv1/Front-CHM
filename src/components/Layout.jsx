@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { logout } from '../api/authApi';
+import { verificarSessao } from '../api/authSessionApi';
 import { buscarBrandingEmpresa } from '../api/empresaApi';
 
 const navClass = ({ isActive }) =>
@@ -15,9 +16,24 @@ export default function Layout() {
     logoUrl: '',
     corPrimaria: '#4f8cff',
   });
+  const [session, setSession] = useState(null);
+  const [valuesHidden, setValuesHidden] = useState(
+    () => window.localStorage.getItem('chm_values_hidden') === 'true'
+  );
+
+  const canManageTeam = session?.papel === 'GESTOR';
+  const canViewFinancials = Boolean(session?.podeVerFinanceiro);
 
   useEffect(() => {
     let active = true;
+
+    verificarSessao()
+      .then((data) => {
+        if (active) setSession(data);
+      })
+      .catch(() => {
+        if (active) setSession(null);
+      });
 
     buscarBrandingEmpresa()
       .then((data) => {
@@ -52,6 +68,19 @@ export default function Layout() {
     }
   }
 
+  function toggleValuesHidden() {
+    setValuesHidden((current) => {
+      const next = !current;
+      window.localStorage.setItem('chm_values_hidden', String(next));
+      return next;
+    });
+  }
+
+  function maskValue(value) {
+    if (!canViewFinancials || valuesHidden) return 'Oculto';
+    return value;
+  }
+
   return (
     <div className="min-h-screen bg-transparent text-slate-100">
       <nav className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/88 backdrop-blur">
@@ -78,21 +107,41 @@ export default function Layout() {
             <NavLink to="/dashboard" className={navClass}>
               Inicio
             </NavLink>
-            <NavLink to="/executivo" className={navClass}>
-              Executivo
-            </NavLink>
+            {canManageTeam && (
+              <NavLink to="/executivo" className={navClass}>
+                Executivo
+              </NavLink>
+            )}
             <NavLink to="/clientes" className={navClass}>
               Clientes
             </NavLink>
-            <NavLink to="/contratos" className={navClass}>
-              Contratos
-            </NavLink>
+            {canManageTeam && (
+              <NavLink to="/contratos" className={navClass}>
+                Contratos
+              </NavLink>
+            )}
             <NavLink to="/tarefas" className={navClass}>
               Contatos
             </NavLink>
-            <NavLink to="/configuracoes" className={navClass}>
-              Marca
-            </NavLink>
+            {canManageTeam && (
+              <NavLink to="/equipe" className={navClass}>
+                Equipe
+              </NavLink>
+            )}
+            {canManageTeam && (
+              <NavLink to="/configuracoes" className={navClass}>
+                Marca
+              </NavLink>
+            )}
+            {canViewFinancials && (
+              <button
+                type="button"
+                onClick={toggleValuesHidden}
+                className="rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
+              >
+                {valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
+              </button>
+            )}
             <button
               type="button"
               onClick={handleLogout}
@@ -104,7 +153,7 @@ export default function Layout() {
         </div>
       </nav>
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <Outlet />
+        <Outlet context={{ session, canManageTeam, canViewFinancials, valuesHidden, maskValue }} />
       </main>
     </div>
   );

@@ -7,6 +7,7 @@ import {
 } from '../api/clientesApi';
 import HealthScoreBadge, { getHealthScoreStyle } from '../components/HealthScoreBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
+import useAppContext from '../hooks/useAppContext';
 import {
   buildHealthHistory,
   buildSuggestedMessage,
@@ -59,6 +60,7 @@ function HealthHistory({ cliente }) {
 }
 
 export default function Clientes() {
+  const { canManageTeam, maskValue } = useAppContext();
   const [clientes, setClientes] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -197,13 +199,15 @@ export default function Clientes() {
           <h2 className="mt-2 text-2xl font-bold tracking-tight">Pessoas que você acompanha</h2>
           <p className="mt-1 text-sm text-chm-muted">Cadastre, atualize e encontre quem precisa de atenção.</p>
         </div>
-        <button
-          type="button"
-          onClick={startCreate}
-          className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
-        >
-          Adicionar cliente
-        </button>
+        {canManageTeam && (
+          <button
+            type="button"
+            onClick={startCreate}
+            className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+          >
+            Adicionar cliente
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -221,7 +225,7 @@ export default function Clientes() {
         </div>
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
           <p className="text-xs text-chm-muted">Receita ativa</p>
-          <p className="mt-1 text-2xl font-bold text-emerald-300">{formatCurrency(stats.receita)}</p>
+          <p className="mt-1 text-2xl font-bold text-emerald-300">{maskValue(formatCurrency(stats.receita))}</p>
         </div>
       </div>
 
@@ -305,23 +309,29 @@ export default function Clientes() {
                           <HealthScoreBadge score={cliente.healthScore} />
                         </td>
                         <td className="px-4 py-4 text-chm-muted">{cliente.statusContrato}</td>
-                        <td className="px-4 py-4">{formatCurrency(cliente.valorMensalidade)}</td>
+                        <td className="px-4 py-4">{maskValue(formatCurrency(cliente.valorMensalidade))}</td>
                         <td className="px-4 py-4">
                           <div className="flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              onClick={() => startEdit(cliente)}
-                              className="rounded-md border border-slate-700 px-2.5 py-1.5 text-xs text-slate-200 hover:bg-slate-800"
-                            >
-                              Editar
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(cliente)}
-                              className="rounded-md border border-red-500/40 px-2.5 py-1.5 text-xs text-red-200 hover:bg-red-500/10"
-                            >
-                              Excluir
-                            </button>
+                            {canManageTeam ? (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => startEdit(cliente)}
+                                  className="rounded-md border border-slate-700 px-2.5 py-1.5 text-xs text-slate-200 hover:bg-slate-800"
+                                >
+                                  Editar
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDelete(cliente)}
+                                  className="rounded-md border border-red-500/40 px-2.5 py-1.5 text-xs text-red-200 hover:bg-red-500/10"
+                                >
+                                  Excluir
+                                </button>
+                              </>
+                            ) : (
+                              <span className="text-xs text-chm-muted">Contato e acompanhamento</span>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -334,6 +344,7 @@ export default function Clientes() {
         </section>
 
         <aside className="space-y-6">
+          {canManageTeam && (
           <section className="rounded-md border border-slate-800/80 bg-chm-card/95 p-5 shadow-xl shadow-black/10">
                   <h3 className="text-lg font-semibold">{formMode === 'edit' ? 'Atualizar cliente' : 'Adicionar cliente'}</h3>
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
@@ -437,6 +448,7 @@ export default function Clientes() {
               </button>
             </form>
           </section>
+          )}
 
           <section className="rounded-md border border-slate-800/80 bg-chm-card/95 p-5 shadow-xl shadow-black/10">
             <h3 className="text-lg font-semibold">Resumo do cliente</h3>
@@ -454,7 +466,7 @@ export default function Clientes() {
                   </div>
                   <div className="rounded-md bg-slate-950/70 p-3">
                     <p className="text-xs text-chm-muted">Mensalidade</p>
-                    <p className="mt-1 font-semibold">{formatCurrency(selectedCliente.valorMensalidade)}</p>
+                    <p className="mt-1 font-semibold">{maskValue(formatCurrency(selectedCliente.valorMensalidade))}</p>
                   </div>
                 </div>
                 <HealthHistory cliente={selectedCliente} />
@@ -477,13 +489,15 @@ export default function Clientes() {
                   <p className="mt-1 text-sm leading-relaxed text-slate-300">{buildSuggestedMessage(selectedCliente)}</p>
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => startEdit(selectedCliente)}
-                    className="flex-1 rounded-md border border-slate-700 px-3 py-2 text-sm font-medium hover:bg-slate-800"
-                  >
-                    Editar
-                  </button>
+                  {canManageTeam && (
+                    <button
+                      type="button"
+                      onClick={() => startEdit(selectedCliente)}
+                      className="flex-1 rounded-md border border-slate-700 px-3 py-2 text-sm font-medium hover:bg-slate-800"
+                    >
+                      Editar
+                    </button>
+                  )}
                   <a
                     href={buildWhatsAppUrl(selectedCliente.telefone, buildSuggestedMessage(selectedCliente))}
                     target="_blank"

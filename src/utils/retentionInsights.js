@@ -1,4 +1,5 @@
 export function formatCurrency(value) {
+  if (value === null || value === undefined) return 'Oculto';
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
