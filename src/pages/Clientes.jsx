@@ -7,6 +7,15 @@ import {
 } from '../api/clientesApi';
 import HealthScoreBadge, { getHealthScoreStyle } from '../components/HealthScoreBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
+import {
+  buildHealthHistory,
+  buildSuggestedMessage,
+  buildWhatsAppUrl,
+  formatCurrency,
+  getRecommendedAction,
+  getRiskReasons,
+  riskBucket,
+} from '../utils/retentionInsights';
 
 const emptyForm = {
   idExternoSistema: '',
@@ -17,29 +26,36 @@ const emptyForm = {
   valorMensalidade: '',
 };
 
-function formatCurrency(value) {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(Number(value || 0));
-}
-
-function riskBucket(score) {
-  if (score > 60) return 'saudavel';
-  if (score >= 40) return 'atencao';
-  return 'risco';
-}
-
 function parseApiError(err) {
   const data = err?.response?.data;
   const details = Array.isArray(data?.details) ? data.details : [];
   return [data?.message, ...details].filter(Boolean).join(' ') || 'Não foi possível salvar o cliente.';
 }
 
-function buildWhatsAppUrl(telefone, nome) {
-  const phone = (telefone || '').replace(/\D/g, '');
-  const text = `Olá ${nome}, tudo bem? Estou entrando em contato para acompanhar sua experiência.`;
-  return `https://api.whatsapp.com/send?${new URLSearchParams({ phone, text }).toString()}`;
+function HealthHistory({ cliente }) {
+  const history = buildHealthHistory(cliente);
+
+  return (
+    <div className="rounded-md border border-slate-800 bg-slate-950/65 p-3">
+      <p className="text-xs font-semibold uppercase tracking-wide text-chm-muted">Historico do health score</p>
+      <div className="mt-3 flex h-24 items-end gap-3">
+        {history.map((point) => (
+          <div key={point.label} className="flex flex-1 flex-col items-center gap-2">
+            <div className="flex h-16 w-full items-end rounded-md bg-slate-900">
+              <div
+                className="w-full rounded-md bg-chm-accent"
+                style={{ height: `${Math.max(10, point.value)}%` }}
+              />
+            </div>
+            <div className="text-center">
+              <p className="text-xs font-semibold">{point.value}</p>
+              <p className="text-[10px] text-chm-muted">{point.label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function Clientes() {
@@ -441,6 +457,25 @@ export default function Clientes() {
                     <p className="mt-1 font-semibold">{formatCurrency(selectedCliente.valorMensalidade)}</p>
                   </div>
                 </div>
+                <HealthHistory cliente={selectedCliente} />
+                <div className="rounded-md border border-blue-500/20 bg-blue-500/10 p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Acao recomendada</p>
+                  <p className="mt-1 text-sm text-slate-200">{getRecommendedAction(selectedCliente)}</p>
+                </div>
+                <div className="rounded-md border border-amber-500/20 bg-amber-500/10 p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-amber-100">Motivo do risco</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {getRiskReasons(selectedCliente).map((reason) => (
+                      <span key={reason} className="rounded-full bg-slate-950/60 px-2.5 py-1 text-xs text-amber-50">
+                        {reason}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-md border border-slate-800 bg-slate-950/65 p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-chm-muted">Mensagem sugerida</p>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-300">{buildSuggestedMessage(selectedCliente)}</p>
+                </div>
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -450,7 +485,7 @@ export default function Clientes() {
                     Editar
                   </button>
                   <a
-                    href={buildWhatsAppUrl(selectedCliente.telefone, selectedCliente.nome)}
+                    href={buildWhatsAppUrl(selectedCliente.telefone, buildSuggestedMessage(selectedCliente))}
                     target="_blank"
                     rel="noreferrer"
                     className="flex-1 rounded-md bg-chm-whatsapp px-3 py-2 text-center text-sm font-semibold text-white hover:bg-green-600"

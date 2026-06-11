@@ -1,6 +1,7 @@
-// Arquivo: frontend/src/components/Layout.jsx
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { logout } from '../api/authApi';
+import { buscarBrandingEmpresa } from '../api/empresaApi';
 
 const navClass = ({ isActive }) =>
   `rounded-md px-3 py-2 text-sm font-medium transition ${
@@ -9,6 +10,39 @@ const navClass = ({ isActive }) =>
 
 export default function Layout() {
   const navigate = useNavigate();
+  const [branding, setBranding] = useState({
+    nomeComercial: 'CHM',
+    logoUrl: '',
+    corPrimaria: '#4f8cff',
+  });
+
+  useEffect(() => {
+    let active = true;
+
+    buscarBrandingEmpresa()
+      .then((data) => {
+        if (active) setBranding(data);
+      })
+      .catch(() => {
+        if (active) {
+          setBranding({
+            nomeComercial: 'CHM',
+            logoUrl: '',
+            corPrimaria: '#4f8cff',
+          });
+        }
+      });
+
+    function handleBrandingUpdated(event) {
+      setBranding(event.detail);
+    }
+
+    window.addEventListener('chm:branding-updated', handleBrandingUpdated);
+    return () => {
+      active = false;
+      window.removeEventListener('chm:branding-updated', handleBrandingUpdated);
+    };
+  }, []);
 
   async function handleLogout() {
     try {
@@ -23,17 +57,29 @@ export default function Layout() {
       <nav className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/88 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chm-accent text-sm font-black text-white">
-              CH
+            <div
+              className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md text-sm font-black text-white"
+              style={{ backgroundColor: branding.corPrimaria || '#4f8cff' }}
+            >
+              {branding.logoUrl ? (
+                <img src={branding.logoUrl} alt="" className="h-full w-full object-cover" />
+              ) : (
+                (branding.nomeComercial || 'CH').slice(0, 2).toUpperCase()
+              )}
             </div>
-            <div>
-              <h1 className="text-lg font-bold tracking-tight">CHM</h1>
+            <div className="min-w-0">
+              <h1 className="max-w-[220px] truncate text-lg font-bold tracking-tight">
+                {branding.nomeComercial || 'CHM'}
+              </h1>
               <p className="text-xs text-chm-muted">Acompanhe clientes com mais cuidado</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <NavLink to="/dashboard" className={navClass}>
-              Início
+              Inicio
+            </NavLink>
+            <NavLink to="/executivo" className={navClass}>
+              Executivo
             </NavLink>
             <NavLink to="/clientes" className={navClass}>
               Clientes
@@ -43,6 +89,9 @@ export default function Layout() {
             </NavLink>
             <NavLink to="/tarefas" className={navClass}>
               Contatos
+            </NavLink>
+            <NavLink to="/configuracoes" className={navClass}>
+              Marca
             </NavLink>
             <button
               type="button"
