@@ -137,9 +137,11 @@ export default function Layout() {
               <button
                 type="button"
                 onClick={toggleValuesHidden}
-                className="rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
+                title={valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
+                aria-label={valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-slate-700 text-xs font-bold text-slate-300 transition hover:bg-slate-800 hover:text-white"
               >
-                {valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
+                {valuesHidden ? '••' : 'R$'}
               </button>
             )}
             <button
