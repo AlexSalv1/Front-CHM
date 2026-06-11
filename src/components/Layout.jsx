@@ -5,7 +5,7 @@ import { verificarSessao } from '../api/authSessionApi';
 import { buscarBrandingEmpresa } from '../api/empresaApi';
 
 const navClass = ({ isActive }) =>
-  `rounded-md px-3 py-2 text-sm font-medium transition ${
+  `shrink-0 rounded-md px-3 py-2 text-sm font-medium transition ${
     isActive ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
   }`;
 
@@ -85,11 +85,11 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-transparent text-slate-100">
-      <nav className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/88 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <div className="flex items-center gap-3">
+      <nav className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/92 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-3 py-3 sm:px-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <div className="flex min-w-0 items-center gap-3">
             <div
-              className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md text-sm font-black text-white"
+              className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md text-sm font-black text-white sm:h-10 sm:w-10"
               style={{ backgroundColor: branding.corPrimaria || '#4f8cff' }}
             >
               {branding.logoUrl ? (
@@ -99,13 +99,13 @@ export default function Layout() {
               )}
             </div>
             <div className="min-w-0">
-              <h1 className="max-w-[220px] truncate text-lg font-bold tracking-tight">
+              <h1 className="max-w-[180px] truncate text-base font-bold tracking-tight sm:max-w-[260px] sm:text-lg">
                 {branding.nomeComercial || 'CHM'}
               </h1>
-              <p className="text-xs text-chm-muted">Acompanhe clientes com mais cuidado</p>
+              <p className="truncate text-xs text-chm-muted">Acompanhe clientes com mais cuidado</p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="-mx-3 flex items-center gap-2 overflow-x-auto px-3 pb-1 sm:-mx-5 sm:px-5 lg:mx-0 lg:px-0 lg:pb-0">
             <NavLink to="/dashboard" className={navClass}>
               Inicio
             </NavLink>
@@ -158,20 +158,20 @@ export default function Layout() {
                 aria-label={valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
                 className="flex h-9 w-9 items-center justify-center rounded-md border border-slate-700 text-xs font-bold text-slate-300 transition hover:bg-slate-800 hover:text-white"
               >
-                {valuesHidden ? '••' : 'R$'}
+                {valuesHidden ? '--' : 'R$'}
               </button>
             )}
             <button
               type="button"
               onClick={handleLogout}
-              className="rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
+              className="shrink-0 rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
             >
               Sair
             </button>
           </div>
         </div>
       </nav>
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
         <Outlet context={{ session, canManageTeam, canManageInsumos, canManageManutencao, canViewFinancials, valuesHidden, maskValue }} />
       </main>
     </div>

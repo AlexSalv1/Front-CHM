@@ -184,7 +184,7 @@ export default function Manutencao() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
           <p className="text-xs text-chm-muted">Abertas</p>
           <p className="mt-1 text-2xl font-bold">{stats.abertas}</p>
@@ -343,7 +343,7 @@ export default function Manutencao() {
                 required
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="prioridade">
                   Prioridade
@@ -379,7 +379,7 @@ export default function Manutencao() {
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="responsavel">
                   Responsavel
@@ -403,7 +403,7 @@ export default function Manutencao() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="dataAbertura">
                   Abertura
@@ -429,7 +429,7 @@ export default function Manutencao() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="dataConclusao">
                   Conclusao

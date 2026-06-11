@@ -17,3 +17,31 @@ body::before {
     radial-gradient(circle at 15% 0%, rgba(79, 140, 255, 0.16), transparent 32rem),
     linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 14px);
 }
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+}
+
+@media (min-width: 640px) {
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 14px;
+  }
+}
+
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 680px;
+}

@@ -92,7 +92,7 @@ export default function Dashboard() {
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">
               Central de retencao
             </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight">Quem precisa de cuidado agora</h2>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Quem precisa de cuidado agora</h2>
             <p className="mt-2 max-w-2xl text-sm text-chm-muted">
               Score historico, motivos de risco, proxima acao e impacto financeiro em uma leitura operacional.
             </p>

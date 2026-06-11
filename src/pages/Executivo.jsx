@@ -53,7 +53,7 @@ export default function Executivo() {
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">
           Dashboard executivo
         </p>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight">Retencao em numeros de negocio</h2>
+        <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Retencao em numeros de negocio</h2>
         <p className="mt-2 max-w-2xl text-sm text-chm-muted">
           Uma visao direta para entender risco, receita protegida e prioridade de acao.
         </p>

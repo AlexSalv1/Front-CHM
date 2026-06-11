@@ -180,7 +180,7 @@ export default function Funcionarios() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
           <p className="text-xs text-chm-muted">Ativos</p>
           <p className="mt-1 text-2xl font-bold">{stats.ativos}</p>
@@ -295,7 +295,7 @@ export default function Funcionarios() {
         <aside className="rounded-md border border-slate-800/80 bg-chm-card/95 p-5 shadow-xl shadow-black/10">
           <h3 className="text-lg font-semibold">{editingId ? 'Editar funcionario' : 'Novo funcionario'}</h3>
           <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div className="col-span-2">
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="nome">
                   Nome
@@ -335,7 +335,7 @@ export default function Funcionarios() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="email">
                   E-mail
@@ -361,7 +361,7 @@ export default function Funcionarios() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="horarioInicio">
                   Inicio
@@ -400,7 +400,7 @@ export default function Funcionarios() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="tipoContrato">
                   Contrato
@@ -436,7 +436,7 @@ export default function Funcionarios() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="dataAdmissao">
                   Admissao
