@@ -1,4 +1,3 @@
-// Arquivo: frontend/src/components/ProtectedRoute.jsx
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { verificarSessao } from '../api/authSessionApi';
@@ -6,38 +5,38 @@ import LoadingSpinner from './LoadingSpinner';
 
 export default function ProtectedRoute({ children }) {
   const [status, setStatus] = useState('loading');
+  const [message, setMessage] = useState('Verificando sessao...');
 
   useEffect(() => {
     let active = true;
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => {
-      controller.abort();
-      if (active) setStatus('unauthenticated');
+    const warmupMessage = window.setTimeout(() => {
+      if (active) {
+        setMessage('Aguardando o servidor responder...');
+      }
     }, 3500);
 
-    verificarSessao({ signal: controller.signal })
+    verificarSessao()
       .then(() => {
         if (active) {
-          window.clearTimeout(timeout);
+          window.clearTimeout(warmupMessage);
           setStatus('authenticated');
         }
       })
       .catch(() => {
         if (active) {
-          window.clearTimeout(timeout);
+          window.clearTimeout(warmupMessage);
           setStatus('unauthenticated');
         }
       });
 
     return () => {
       active = false;
-      window.clearTimeout(timeout);
-      controller.abort();
+      window.clearTimeout(warmupMessage);
     };
   }, []);
 
   if (status === 'loading') {
-    return <LoadingSpinner label="Verificando sessão..." />;
+    return <LoadingSpinner label={message} />;
   }
 
   if (status === 'unauthenticated') {
