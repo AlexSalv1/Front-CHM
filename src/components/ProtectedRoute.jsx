@@ -9,17 +9,30 @@ export default function ProtectedRoute({ children }) {
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => {
+      controller.abort();
+      if (active) setStatus('unauthenticated');
+    }, 3500);
 
-    verificarSessao()
+    verificarSessao({ signal: controller.signal })
       .then(() => {
-        if (active) setStatus('authenticated');
+        if (active) {
+          window.clearTimeout(timeout);
+          setStatus('authenticated');
+        }
       })
       .catch(() => {
-        if (active) setStatus('unauthenticated');
+        if (active) {
+          window.clearTimeout(timeout);
+          setStatus('unauthenticated');
+        }
       });
 
     return () => {
       active = false;
+      window.clearTimeout(timeout);
+      controller.abort();
     };
   }, []);
 
