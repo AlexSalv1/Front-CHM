@@ -1,7 +1,6 @@
 @echo off
 setlocal
-set "ROOT=%~dp0.."
-set "GIT=%ROOT%\git-local.cmd"
+set "GIT=git"
 
 cd /d "%~dp0"
 

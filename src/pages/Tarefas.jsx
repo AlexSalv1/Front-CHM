@@ -39,7 +39,15 @@ export default function Tarefas() {
     const search = query.trim().toLowerCase();
     if (!search) return tarefas;
     return tarefas.filter((tarefa) =>
-      [tarefa.clienteNome, tarefa.clienteTelefone, tarefa.mensagemSugerida]
+      [
+        tarefa.clienteNome,
+        tarefa.clienteTelefone,
+        tarefa.mensagemSugerida,
+        tarefa.acaoRecomendada,
+        tarefa.motivoAnalise,
+        tarefa.prioridade,
+        tarefa.origem,
+      ]
         .filter(Boolean)
         .some((value) => value.toLowerCase().includes(search))
     );
@@ -70,7 +78,7 @@ export default function Tarefas() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">Contatos</p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight">Conversas que valem acontecer</h2>
-          <p className="mt-1 text-sm text-chm-muted">Mensagens prontas para retomar contato com quem precisa de cuidado.</p>
+            <p className="mt-1 text-sm text-chm-muted">Prioridades, acoes e mensagens sugeridas para clientes com health score ate 60.</p>
         </div>
         <button
           type="button"
@@ -115,11 +123,29 @@ export default function Tarefas() {
                     {tarefa.clienteTelefone || 'Telefone não informado'}
                   </p>
                   <span className="mt-3 inline-flex rounded-full bg-amber-500/20 px-2.5 py-1 text-xs font-medium text-amber-200">
-                    {tarefa.statusTarefa}
+                    {tarefa.prioridade || tarefa.statusTarefa}
                   </span>
+                  {tarefa.origem && <p className="mt-2 text-xs text-chm-muted">{tarefa.origem}</p>}
                 </div>
 
-                <p className="text-sm leading-relaxed text-slate-300">{tarefa.mensagemSugerida}</p>
+                <div className="space-y-3 text-sm">
+                  {tarefa.motivoAnalise && (
+                    <div className="rounded-md border border-slate-800 bg-slate-950/60 p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-chm-muted">Analise</p>
+                      <p className="mt-1 text-slate-300">{tarefa.motivoAnalise}</p>
+                    </div>
+                  )}
+                  {tarefa.acaoRecomendada && (
+                    <div className="rounded-md border border-blue-500/20 bg-blue-500/10 p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Acao recomendada</p>
+                      <p className="mt-1 text-slate-200">{tarefa.acaoRecomendada}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-chm-muted">Mensagem sugerida</p>
+                    <p className="mt-1 leading-relaxed text-slate-300">{tarefa.mensagemSugerida}</p>
+                  </div>
+                </div>
 
                 <div className="flex items-start justify-end">
                   <button

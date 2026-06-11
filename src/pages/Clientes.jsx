@@ -25,7 +25,7 @@ function formatCurrency(value) {
 }
 
 function riskBucket(score) {
-  if (score >= 70) return 'saudavel';
+  if (score > 60) return 'saudavel';
   if (score >= 40) return 'atencao';
   return 'risco';
 }
@@ -93,7 +93,7 @@ export default function Clientes() {
 
   const stats = useMemo(() => {
     const ativos = clientes.filter((cliente) => cliente.statusContrato === 'ATIVO');
-    const risco = clientes.filter((cliente) => cliente.healthScore < 40);
+    const risco = clientes.filter((cliente) => cliente.healthScore <= 60);
     const receita = ativos.reduce((total, cliente) => total + Number(cliente.valorMensalidade || 0), 0);
     const media =
       clientes.length === 0

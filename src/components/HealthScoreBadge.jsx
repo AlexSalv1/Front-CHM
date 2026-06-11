@@ -1,6 +1,6 @@
 // Arquivo: frontend/src/components/HealthScoreBadge.jsx
 export function getHealthScoreStyle(score) {
-  if (score >= 70) {
+  if (score > 60) {
     return {
       badge: 'bg-emerald-500/20 text-emerald-300',
       row: 'border-emerald-500/30 bg-emerald-500/5',

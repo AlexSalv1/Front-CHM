@@ -15,8 +15,8 @@ function formatCurrency(value) {
 function bucketClientes(clientes) {
   return {
     risco: clientes.filter((cliente) => cliente.healthScore < 40),
-    atencao: clientes.filter((cliente) => cliente.healthScore >= 40 && cliente.healthScore < 70),
-    saudavel: clientes.filter((cliente) => cliente.healthScore >= 70),
+    atencao: clientes.filter((cliente) => cliente.healthScore >= 40 && cliente.healthScore <= 60),
+    saudavel: clientes.filter((cliente) => cliente.healthScore > 60),
   };
 }
 
@@ -99,7 +99,7 @@ export default function Dashboard() {
         <MetricCard
           title="Pedem atenção"
           value={metricas.clientesEmRisco}
-          subtitle="Health score abaixo de 40"
+          subtitle="Health score ate 60"
           accent="text-red-300"
         />
         <MetricCard

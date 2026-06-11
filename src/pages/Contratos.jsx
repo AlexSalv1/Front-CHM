@@ -21,18 +21,30 @@ export default function Contratos() {
   useEffect(() => {
     let active = true;
 
+    async function loadIntegracao() {
+      try {
+        const integracaoData = await buscarConfigIntegracao();
+        if (active) setIntegracao(integracaoData);
+      } catch {
+        if (active) setIntegracao(null);
+      }
+    }
+
+    loadIntegracao();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
     async function load() {
       setLoading(true);
       setError('');
       try {
-        const [relatorioData, integracaoData] = await Promise.all([
-          buscarRelatorioContratos(periodo),
-          buscarConfigIntegracao(),
-        ]);
-        if (active) {
-          setRelatorio(relatorioData);
-          setIntegracao(integracaoData);
-        }
+        const relatorioData = await buscarRelatorioContratos(periodo);
+        if (active) setRelatorio(relatorioData);
       } catch (err) {
         if (active) setError('Não foi possível carregar o relatório de contratos.');
       } finally {
