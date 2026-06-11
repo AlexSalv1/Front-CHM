@@ -9,6 +9,7 @@ const emptyForm = {
   senha: '',
   papel: 'ATENDENTE',
   podeVerFinanceiro: false,
+  podeGerenciarInsumos: false,
 };
 
 function parseApiError(err) {
@@ -60,6 +61,7 @@ export default function Equipe() {
         nome: form.nome.trim(),
         email: form.email.trim(),
         podeVerFinanceiro: form.papel === 'GESTOR' && form.podeVerFinanceiro,
+        podeGerenciarInsumos: form.podeGerenciarInsumos,
       });
       setForm(emptyForm);
       await loadEquipe();
@@ -82,6 +84,15 @@ export default function Equipe() {
   async function toggleFinanceiro(usuario) {
     try {
       await atualizarUsuarioEquipe(usuario.id, { podeVerFinanceiro: !usuario.podeVerFinanceiro });
+      await loadEquipe();
+    } catch (err) {
+      setError(parseApiError(err));
+    }
+  }
+
+  async function toggleInsumos(usuario) {
+    try {
+      await atualizarUsuarioEquipe(usuario.id, { podeGerenciarInsumos: !usuario.podeGerenciarInsumos });
       await loadEquipe();
     } catch (err) {
       setError(parseApiError(err));
@@ -127,6 +138,7 @@ export default function Equipe() {
                   <th className="px-4 py-3 font-medium">Usuario</th>
                   <th className="px-4 py-3 font-medium">Papel</th>
                   <th className="px-4 py-3 font-medium">Financeiro</th>
+                  <th className="px-4 py-3 font-medium">Insumos</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Acoes</th>
                 </tr>
@@ -151,6 +163,15 @@ export default function Equipe() {
                       ) : (
                         <span className="text-chm-muted">Oculto</span>
                       )}
+                    </td>
+                    <td className="px-4 py-4">
+                      <button
+                        type="button"
+                        onClick={() => toggleInsumos(usuario)}
+                        className="rounded-md border border-slate-700 px-2.5 py-1.5 text-xs hover:bg-slate-800"
+                      >
+                        {usuario.podeGerenciarInsumos ? 'Liberado' : 'Bloqueado'}
+                      </button>
                     </td>
                     <td className="px-4 py-4">
                       <span className={usuario.ativo ? 'text-emerald-300' : 'text-red-300'}>
@@ -240,6 +261,15 @@ export default function Equipe() {
                 Permitir acesso financeiro
               </label>
             )}
+            <label className="flex items-center gap-2 text-sm text-slate-300">
+              <input
+                type="checkbox"
+                checked={form.podeGerenciarInsumos}
+                onChange={(event) => updateForm('podeGerenciarInsumos', event.target.checked)}
+                className="h-4 w-4 rounded border-slate-700 bg-slate-950"
+              />
+              Permitir gerenciar insumos e compras
+            </label>
             <button
               type="submit"
               disabled={saving}
