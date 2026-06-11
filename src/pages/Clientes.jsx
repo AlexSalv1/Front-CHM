@@ -22,6 +22,7 @@ const emptyForm = {
   idExternoSistema: '',
   nome: '',
   telefone: '',
+  email: '',
   healthScore: 50,
   statusContrato: 'ATIVO',
   valorMensalidade: '',
@@ -102,6 +103,7 @@ export default function Clientes() {
         !search ||
         cliente.nome.toLowerCase().includes(search) ||
         cliente.idExternoSistema.toLowerCase().includes(search) ||
+        (cliente.email || '').toLowerCase().includes(search) ||
         (cliente.telefone || '').includes(search);
       const matchesStatus = statusFilter === 'TODOS' || cliente.statusContrato === statusFilter;
       const matchesRisk = riskFilter === 'todos' || riskBucket(cliente.healthScore) === riskFilter;
@@ -132,6 +134,7 @@ export default function Clientes() {
       idExternoSistema: cliente.idExternoSistema,
       nome: cliente.nome,
       telefone: cliente.telefone || '',
+      email: cliente.email || '',
       healthScore: cliente.healthScore,
       statusContrato: cliente.statusContrato,
       valorMensalidade: String(cliente.valorMensalidade),
@@ -154,6 +157,7 @@ export default function Clientes() {
       healthScore: Number(form.healthScore),
       valorMensalidade: Number(form.valorMensalidade),
       telefone: form.telefone.trim(),
+      email: form.email.trim().toLowerCase(),
     };
 
     try {
@@ -242,7 +246,7 @@ export default function Clientes() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-chm-accent"
-            placeholder="Buscar cliente, ID ou telefone"
+            placeholder="Buscar cliente, ID, email ou telefone"
             />
             <select
               value={statusFilter}
@@ -302,7 +306,10 @@ export default function Clientes() {
                             className="text-left"
                           >
                             <span className="block font-semibold text-white">{cliente.nome}</span>
-                            <span className="text-xs text-chm-muted">{cliente.idExternoSistema}</span>
+                            <span className="text-xs text-chm-muted">
+                              {cliente.idExternoSistema}
+                              {cliente.email ? ` | ${cliente.email}` : ''}
+                            </span>
                           </button>
                         </td>
                         <td className="px-4 py-4">
@@ -390,6 +397,20 @@ export default function Clientes() {
                 />
               </div>
 
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="email">
+                  E-mail para pesquisas
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={form.email}
+                  onChange={(event) => updateForm('email', event.target.value)}
+                  className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
+                  placeholder="cliente@email.com"
+                />
+              </div>
+
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="healthScore">
@@ -457,6 +478,7 @@ export default function Clientes() {
                 <div>
                   <p className="text-xl font-bold">{selectedCliente.nome}</p>
                   <p className="text-sm text-chm-muted">{selectedCliente.telefone || 'Telefone não informado'}</p>
+                  <p className="text-sm text-chm-muted">{selectedCliente.email || 'E-mail não informado'}</p>
                 </div>
                 <HealthScoreBadge score={selectedCliente.healthScore} />
                 <div className="grid gap-3 text-sm sm:grid-cols-2">

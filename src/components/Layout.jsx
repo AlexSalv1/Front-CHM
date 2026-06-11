@@ -146,6 +146,11 @@ export default function Layout() {
               </NavLink>
             )}
             {canManageTeam && (
+              <NavLink to="/feedback" className={navClass}>
+                Feedback
+              </NavLink>
+            )}
+            {canManageTeam && (
               <NavLink to="/configuracoes" className={navClass}>
                 Marca
               </NavLink>

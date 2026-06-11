@@ -13,11 +13,14 @@ import Equipe from './pages/Equipe';
 import Funcionarios from './pages/Funcionarios';
 import Insumos from './pages/Insumos';
 import Manutencao from './pages/Manutencao';
+import Feedback from './pages/Feedback';
+import FeedbackPublico from './pages/FeedbackPublico';
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/feedback/:token" element={<FeedbackPublico />} />
       <Route
         element={
           <ProtectedRoute>
@@ -34,6 +37,7 @@ export default function App() {
         <Route path="/funcionarios" element={<Funcionarios />} />
         <Route path="/insumos" element={<Insumos />} />
         <Route path="/manutencao" element={<Manutencao />} />
+        <Route path="/feedback" element={<Feedback />} />
         <Route path="/configuracoes" element={<Configuracoes />} />
       </Route>
       <Route path="/" element={<Navigate to="/login" replace />} />
