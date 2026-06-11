@@ -10,6 +10,7 @@ const emptyForm = {
   papel: 'ATENDENTE',
   podeVerFinanceiro: false,
   podeGerenciarInsumos: false,
+  podeGerenciarManutencao: false,
 };
 
 function parseApiError(err) {
@@ -62,6 +63,7 @@ export default function Equipe() {
         email: form.email.trim(),
         podeVerFinanceiro: form.papel === 'GESTOR' && form.podeVerFinanceiro,
         podeGerenciarInsumos: form.podeGerenciarInsumos,
+        podeGerenciarManutencao: form.podeGerenciarManutencao,
       });
       setForm(emptyForm);
       await loadEquipe();
@@ -93,6 +95,15 @@ export default function Equipe() {
   async function toggleInsumos(usuario) {
     try {
       await atualizarUsuarioEquipe(usuario.id, { podeGerenciarInsumos: !usuario.podeGerenciarInsumos });
+      await loadEquipe();
+    } catch (err) {
+      setError(parseApiError(err));
+    }
+  }
+
+  async function toggleManutencao(usuario) {
+    try {
+      await atualizarUsuarioEquipe(usuario.id, { podeGerenciarManutencao: !usuario.podeGerenciarManutencao });
       await loadEquipe();
     } catch (err) {
       setError(parseApiError(err));
@@ -139,6 +150,7 @@ export default function Equipe() {
                   <th className="px-4 py-3 font-medium">Papel</th>
                   <th className="px-4 py-3 font-medium">Financeiro</th>
                   <th className="px-4 py-3 font-medium">Insumos</th>
+                  <th className="px-4 py-3 font-medium">Manutencao</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Acoes</th>
                 </tr>
@@ -171,6 +183,15 @@ export default function Equipe() {
                         className="rounded-md border border-slate-700 px-2.5 py-1.5 text-xs hover:bg-slate-800"
                       >
                         {usuario.podeGerenciarInsumos ? 'Liberado' : 'Bloqueado'}
+                      </button>
+                    </td>
+                    <td className="px-4 py-4">
+                      <button
+                        type="button"
+                        onClick={() => toggleManutencao(usuario)}
+                        className="rounded-md border border-slate-700 px-2.5 py-1.5 text-xs hover:bg-slate-800"
+                      >
+                        {usuario.podeGerenciarManutencao ? 'Liberado' : 'Bloqueado'}
                       </button>
                     </td>
                     <td className="px-4 py-4">
@@ -269,6 +290,15 @@ export default function Equipe() {
                 className="h-4 w-4 rounded border-slate-700 bg-slate-950"
               />
               Permitir gerenciar insumos e compras
+            </label>
+            <label className="flex items-center gap-2 text-sm text-slate-300">
+              <input
+                type="checkbox"
+                checked={form.podeGerenciarManutencao}
+                onChange={(event) => updateForm('podeGerenciarManutencao', event.target.checked)}
+                className="h-4 w-4 rounded border-slate-700 bg-slate-950"
+              />
+              Permitir gerenciar manutencao
             </label>
             <button
               type="submit"

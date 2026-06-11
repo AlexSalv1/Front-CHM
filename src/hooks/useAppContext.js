@@ -5,6 +5,7 @@ export default function useAppContext() {
     session: null,
     canManageTeam: false,
     canManageInsumos: false,
+    canManageManutencao: false,
     canViewFinancials: false,
     valuesHidden: false,
     maskValue: (value) => value,

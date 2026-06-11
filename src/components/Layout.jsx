@@ -23,6 +23,7 @@ export default function Layout() {
 
   const canManageTeam = session?.papel === 'GESTOR';
   const canManageInsumos = Boolean(session?.podeGerenciarInsumos);
+  const canManageManutencao = Boolean(session?.podeGerenciarManutencao);
   const canViewFinancials = Boolean(session?.podeVerFinanceiro);
 
   useEffect(() => {
@@ -139,6 +140,11 @@ export default function Layout() {
                 Insumos
               </NavLink>
             )}
+            {canManageManutencao && (
+              <NavLink to="/manutencao" className={navClass}>
+                Manutencao
+              </NavLink>
+            )}
             {canManageTeam && (
               <NavLink to="/configuracoes" className={navClass}>
                 Marca
@@ -166,7 +172,7 @@ export default function Layout() {
         </div>
       </nav>
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <Outlet context={{ session, canManageTeam, canManageInsumos, canViewFinancials, valuesHidden, maskValue }} />
+        <Outlet context={{ session, canManageTeam, canManageInsumos, canManageManutencao, canViewFinancials, valuesHidden, maskValue }} />
       </main>
     </div>
   );
