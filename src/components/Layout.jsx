@@ -9,6 +9,104 @@ const navClass = ({ isActive }) =>
     isActive ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
   }`;
 
+function HotbarIcon({ name }) {
+  const common = {
+    className: 'h-4 w-4',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    strokeWidth: 2,
+    viewBox: '0 0 24 24',
+    'aria-hidden': true,
+  };
+
+  const icons = {
+    dashboard: (
+      <svg {...common}>
+        <path d="M4 13h6V4H4z" />
+        <path d="M14 20h6V4h-6z" />
+        <path d="M4 20h6v-3H4z" />
+      </svg>
+    ),
+    executivo: (
+      <svg {...common}>
+        <path d="M4 19V5" />
+        <path d="M4 19h16" />
+        <path d="m7 15 4-4 3 3 5-7" />
+      </svg>
+    ),
+    clientes: (
+      <svg {...common}>
+        <path d="M16 19c0-2.2-1.8-4-4-4s-4 1.8-4 4" />
+        <path d="M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+        <path d="M19 18c0-1.4-.8-2.6-2-3.2" />
+        <path d="M17 7.2a2.5 2.5 0 0 1 0 4.6" />
+      </svg>
+    ),
+    contratos: (
+      <svg {...common}>
+        <path d="M7 3h7l4 4v14H7z" />
+        <path d="M14 3v5h5" />
+        <path d="M10 13h6" />
+        <path d="M10 17h4" />
+      </svg>
+    ),
+    contatos: (
+      <svg {...common}>
+        <path d="M5 6h14v10H8l-3 3z" />
+        <path d="M8 10h8" />
+        <path d="M8 13h5" />
+      </svg>
+    ),
+    equipe: (
+      <svg {...common}>
+        <path d="M8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+        <path d="M16 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+        <path d="M3 20c0-2.5 2.2-4.5 5-4.5" />
+        <path d="M21 20c0-2.5-2.2-4.5-5-4.5" />
+      </svg>
+    ),
+    funcionarios: (
+      <svg {...common}>
+        <path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0z" />
+        <path d="M6 21v-2a6 6 0 0 1 12 0v2" />
+        <path d="M9 15h6" />
+      </svg>
+    ),
+    insumos: (
+      <svg {...common}>
+        <path d="M4 8h16l-2 12H6z" />
+        <path d="M8 8a4 4 0 0 1 8 0" />
+        <path d="M9 13h6" />
+      </svg>
+    ),
+    manutencao: (
+      <svg {...common}>
+        <path d="m14 7 3-3 3 3-3 3z" />
+        <path d="M14 7 5 16l-1 4 4-1 9-9" />
+        <path d="M12 9 9 6" />
+      </svg>
+    ),
+    feedback: (
+      <svg {...common}>
+        <path d="M5 5h14v10H8l-3 4z" />
+        <path d="M9 9h6" />
+        <path d="M9 12h4" />
+      </svg>
+    ),
+    marca: (
+      <svg {...common}>
+        <path d="M12 3 4 7v10l8 4 8-4V7z" />
+        <path d="M12 3v18" />
+        <path d="m4 7 8 4 8-4" />
+      </svg>
+    ),
+  };
+
+  return icons[name] || icons.dashboard;
+}
+
 export default function Layout() {
   const navigate = useNavigate();
   const [branding, setBranding] = useState({
@@ -95,17 +193,17 @@ export default function Layout() {
   }
 
   const navItems = [
-    { to: '/dashboard', label: 'Inicio', mark: 'IN', allowed: true },
-    { to: '/executivo', label: 'Executivo', mark: 'EX', allowed: canManageTeam },
-    { to: '/clientes', label: 'Clientes', mark: 'CL', allowed: true },
-    { to: '/contratos', label: 'Contratos', mark: 'CT', allowed: canManageTeam },
-    { to: '/tarefas', label: 'Contatos', mark: 'CO', allowed: true },
-    { to: '/equipe', label: 'Equipe', mark: 'EQ', allowed: canManageTeam },
-    { to: '/funcionarios', label: 'Funcionarios', mark: 'FN', allowed: canManageTeam },
-    { to: '/insumos', label: 'Insumos', mark: 'IS', allowed: canManageInsumos },
-    { to: '/manutencao', label: 'Manutencao', mark: 'MT', allowed: canManageManutencao },
-    { to: '/feedback', label: 'Feedback', mark: 'FB', allowed: canManageTeam },
-    { to: '/configuracoes', label: 'Marca', mark: 'MA', allowed: canManageTeam },
+    { to: '/dashboard', label: 'Inicio', icon: 'dashboard', allowed: true },
+    { to: '/executivo', label: 'Executivo', icon: 'executivo', allowed: canManageTeam },
+    { to: '/clientes', label: 'Clientes', icon: 'clientes', allowed: true },
+    { to: '/contratos', label: 'Contratos', icon: 'contratos', allowed: canManageTeam },
+    { to: '/tarefas', label: 'Contatos', icon: 'contatos', allowed: true },
+    { to: '/equipe', label: 'Equipe', icon: 'equipe', allowed: canManageTeam },
+    { to: '/funcionarios', label: 'Funcionarios', icon: 'funcionarios', allowed: canManageTeam },
+    { to: '/insumos', label: 'Insumos', icon: 'insumos', allowed: canManageInsumos },
+    { to: '/manutencao', label: 'Manutencao', icon: 'manutencao', allowed: canManageManutencao },
+    { to: '/feedback', label: 'Feedback', icon: 'feedback', allowed: canManageTeam },
+    { to: '/configuracoes', label: 'Marca', icon: 'marca', allowed: canManageTeam },
   ].filter((item) => item.allowed);
 
   return (
@@ -194,8 +292,8 @@ export default function Layout() {
                   }}
                   title={item.label}
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-900 text-[11px] font-black">
-                    {item.mark}
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-900">
+                    <HotbarIcon name={item.icon} />
                   </span>
                   <span className="truncate">{item.label}</span>
                 </NavLink>
