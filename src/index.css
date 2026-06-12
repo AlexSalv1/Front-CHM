@@ -92,6 +92,41 @@ body::before {
   color: #0f172a !important;
 }
 
+[data-theme='light'] [class*='bg-blue-500/10'] {
+  background-color: #eff6ff !important;
+}
+
+[data-theme='light'] [class*='border-blue-500/20'] {
+  border-color: #bfdbfe !important;
+}
+
+[data-theme='light'] [class*='text-blue-200'] {
+  color: #1d4ed8 !important;
+}
+
+[data-theme='light'] [class*='bg-amber-500/10'],
+[data-theme='light'] [class*='bg-amber-500/15'],
+[data-theme='light'] [class*='bg-amber-500/20'] {
+  background-color: #fffbeb !important;
+}
+
+[data-theme='light'] [class*='border-amber-500/20'],
+[data-theme='light'] [class*='border-amber-500/30'] {
+  border-color: #fcd34d !important;
+}
+
+[data-theme='light'] [class*='text-amber-50'],
+[data-theme='light'] [class*='text-amber-100'],
+[data-theme='light'] [class*='text-amber-200'],
+[data-theme='light'] [class*='text-amber-300'] {
+  color: #92400e !important;
+}
+
+[data-theme='light'] [class*='bg-slate-950/60'][class*='text-amber-50'] {
+  background-color: #fef3c7 !important;
+  color: #78350f !important;
+}
+
 [data-theme='light'] .bg-chm-accent,
 [data-theme='light'] .bg-chm-accent.text-white,
 [data-theme='light'] .bg-blue-500,
