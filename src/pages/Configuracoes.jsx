@@ -12,7 +12,7 @@ const defaultForm = {
 function parseApiError(err) {
   const data = err?.response?.data;
   const details = Array.isArray(data?.details) ? data.details : [];
-  return [data?.message, ...details].filter(Boolean).join(' ') || 'Nao foi possivel salvar a marca.';
+  return [data?.message, ...details].filter(Boolean).join(' ') || 'Não foi possível salvar a marca.';
 }
 
 function readImageAsDataUrl(file) {
@@ -42,7 +42,7 @@ export default function Configuracoes() {
           corPrimaria: branding.corPrimaria || '#4f8cff',
         });
       } catch (err) {
-        setError('Nao foi possivel carregar as configuracoes.');
+        setError('Não foi possível carregar as configurações.');
       } finally {
         setLoading(false);
       }
@@ -66,7 +66,7 @@ export default function Configuracoes() {
     }
 
     if (file.size > 500 * 1024) {
-      setError('Use uma imagem de ate 500 KB para o logo.');
+      setError('Use uma imagem de até 500 KB para o logo.');
       return;
     }
 
@@ -75,7 +75,7 @@ export default function Configuracoes() {
       updateForm('logoUrl', dataUrl);
       setError('');
     } catch (err) {
-      setError('Nao foi possivel ler a imagem selecionada.');
+      setError('Não foi possível ler a imagem selecionada.');
     }
   }
 
@@ -108,16 +108,16 @@ export default function Configuracoes() {
   if (session && !canManageTeam) {
     return (
       <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
-        Seu usuario nao tem acesso as configuracoes da marca.
+        Seu usuário não tem acesso às configurações da marca.
       </div>
     );
   }
-  if (loading) return <LoadingSpinner label="Carregando configuracoes..." />;
+  if (loading) return <LoadingSpinner label="Carregando configurações..." />;
 
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">Configuracoes</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">Configurações</p>
         <h2 className="mt-2 text-2xl font-bold tracking-tight">Marca da academia</h2>
         <p className="mt-1 text-sm text-chm-muted">
           Personalize o nome, logo e cor que aparecem apenas para sua empresa.
@@ -177,7 +177,7 @@ export default function Configuracoes() {
                 className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
                 placeholder="https://sua-academia.com/logo.png"
               />
-              <p className="mt-1 text-xs text-chm-muted">Voce pode enviar arquivo ou colar uma URL.</p>
+              <p className="mt-1 text-xs text-chm-muted">Você pode enviar arquivo ou colar uma URL.</p>
             </div>
 
             <div>
@@ -214,7 +214,7 @@ export default function Configuracoes() {
         </section>
 
         <aside className="rounded-md border border-slate-800/80 bg-chm-card/95 p-5 shadow-xl shadow-black/10">
-          <h3 className="text-lg font-semibold">Previa</h3>
+          <h3 className="text-lg font-semibold">Prévia</h3>
           <div className="mt-5 rounded-md border border-slate-800 bg-slate-950/70 p-4">
             <div className="flex items-center gap-3">
               <div

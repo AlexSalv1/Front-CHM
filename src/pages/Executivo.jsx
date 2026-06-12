@@ -22,7 +22,7 @@ export default function Executivo() {
         setClientes(clientesData);
         setMetricas(metricasData);
       } catch (err) {
-        setError('Nao foi possivel carregar o dashboard executivo.');
+        setError('Não foi possível carregar o dashboard executivo.');
       } finally {
         setLoading(false);
       }
@@ -42,7 +42,7 @@ export default function Executivo() {
   if (session && !canManageTeam) {
     return (
       <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
-        Seu usuario nao tem acesso ao dashboard executivo.
+        Seu usuário não tem acesso ao dashboard executivo.
       </div>
     );
   }
@@ -53,9 +53,9 @@ export default function Executivo() {
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">
           Dashboard executivo
         </p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Retencao em numeros de negocio</h2>
+        <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Retenção em números de negócio</h2>
         <p className="mt-2 max-w-2xl text-sm text-chm-muted">
-          Uma visao direta para entender risco, receita protegida e prioridade de acao.
+          Uma visão direta para entender risco, receita protegida e prioridade de ação.
         </p>
       </section>
 
@@ -63,25 +63,25 @@ export default function Executivo() {
         <MetricCard
           title="Clientes em risco"
           value={metricas.clientesEmRisco}
-          subtitle={`${metricas.clientesCriticos} em nivel critico`}
+          subtitle={`${metricas.clientesCriticos} em nível crítico`}
           accent="text-red-300"
         />
         <MetricCard
           title="Receita protegida"
           value={maskValue(formatCurrency(metricas.receitaProtegidaEstimada))}
-          subtitle="Estimativa com recuperacao de 35%"
+          subtitle="Estimativa com recuperação de 35%"
           accent="text-emerald-300"
         />
         <MetricCard
-          title="Risco este mes"
+          title="Risco este mês"
           value={maskValue(formatCurrency(metricas.receitaMensalEmRisco))}
-          subtitle="Mensalidade em clientes frageis"
+          subtitle="Mensalidade em clientes frágeis"
           accent="text-amber-300"
         />
         <MetricCard
-          title="Score medio"
+          title="Score médio"
           value={metricas.healthScoreMedio}
-          subtitle="Saude media da base"
+          subtitle="Saúde média da base"
           accent="text-chm-accent"
         />
       </div>
@@ -110,7 +110,7 @@ export default function Executivo() {
               <div>
                 <h3 className="text-lg font-semibold">Prioridade da semana</h3>
                 <p className="mt-1 text-sm text-chm-muted">
-                  Recuperar clientes com score ate 60 protege receita antes de virar churn.
+                  Recuperar clientes com score até 60 protege receita antes de virar churn.
                 </p>
               </div>
               <div className="text-right">
@@ -122,8 +122,8 @@ export default function Executivo() {
         </section>
 
         <section className="rounded-md border border-slate-800 bg-chm-card p-5">
-          <h3 className="text-lg font-semibold">Causas provaveis</h3>
-          <p className="text-sm text-chm-muted">Onde corrigir a operacao primeiro.</p>
+          <h3 className="text-lg font-semibold">Causas prováveis</h3>
+          <p className="text-sm text-chm-muted">Onde corrigir a operação primeiro.</p>
           <div className="mt-4 space-y-3">
             {patterns.map((pattern) => (
               <div key={pattern.title} className="rounded-md bg-slate-950/65 p-3">

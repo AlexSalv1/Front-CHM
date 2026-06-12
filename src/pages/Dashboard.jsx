@@ -58,7 +58,7 @@ export default function Dashboard() {
         setClientes(clientesData);
         setMetricas(metricasData);
       } catch (err) {
-        setError('Nao foi possivel carregar o dashboard.');
+        setError('Não foi possível carregar o dashboard.');
       } finally {
         setLoading(false);
       }
@@ -86,30 +86,25 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-7">
-      <section className="rounded-md border border-slate-800/80 bg-slate-950/75 p-6 shadow-xl shadow-black/10">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">
-              Central de retencao
-            </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Quem precisa de cuidado agora</h2>
-            <p className="mt-2 max-w-2xl text-sm text-chm-muted">
-              Score historico, motivos de risco, proxima acao e impacto financeiro em uma leitura operacional.
+      <section className="chm-surface-strong p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="chm-kicker">Central de retenção</p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-chm-text sm:text-4xl">
+              Quem precisa de cuidado agora
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-chm-muted sm:text-base">
+              Score histórico, motivos de risco, próxima ação e impacto financeiro em uma leitura operacional
+              clara para o gestor e para a equipe.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             {canManageTeam && (
-              <Link
-                to="/executivo"
-                className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
-              >
+              <Link to="/executivo" className="chm-action-primary px-4 py-2">
                 Dashboard executivo
               </Link>
             )}
-            <Link
-              to="/tarefas"
-              className="rounded-md border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800"
-            >
+            <Link to="/tarefas" className="chm-action px-4 py-2">
               Ver contatos
             </Link>
           </div>
@@ -132,22 +127,22 @@ export default function Dashboard() {
         <MetricCard
           title="Clientes criticos"
           value={metricas.clientesCriticos}
-          subtitle="Health score ate 40"
+          subtitle="Health score até 40"
           accent="text-red-300"
         />
         <MetricCard
-          title="Saude media"
+          title="Saúde média"
           value={metricas.healthScoreMedio}
-          subtitle="Media geral da carteira"
+          subtitle="Média geral da carteira"
           accent="text-chm-accent"
         />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <section className="rounded-md border border-slate-800 bg-chm-card p-5">
-          <div className="mb-5 flex items-center justify-between">
+        <section className="chm-surface p-5">
+          <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-lg font-semibold">Ranking de clientes em risco</h3>
+              <h3 className="text-lg font-semibold text-chm-text">Ranking de clientes em risco</h3>
               <p className="text-sm text-chm-muted">Prioridade calculada por score, status e valor financeiro.</p>
             </div>
             <span className="text-sm text-chm-muted">{clientesPrioritarios.length} prioridades</span>
@@ -155,7 +150,7 @@ export default function Dashboard() {
 
           <div className="space-y-3">
             {clientesPrioritarios.length === 0 ? (
-              <p className="rounded-md bg-slate-950/70 p-4 text-sm text-chm-muted">
+              <p className="chm-surface-soft p-4 text-sm text-chm-muted">
                 Nenhum cliente em risco no momento.
               </p>
             ) : (
@@ -164,34 +159,34 @@ export default function Dashboard() {
                 return (
                   <article
                     key={cliente.id}
-                    className="grid gap-4 rounded-md border border-slate-800 bg-slate-950/55 p-4 lg:grid-cols-[36px_minmax(0,1fr)_120px]"
+                    className="grid gap-4 rounded-xl border border-slate-800 bg-slate-950/45 p-4 lg:grid-cols-[36px_minmax(0,1fr)_120px]"
                   >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-slate-800 text-sm font-bold">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-slate-800 text-sm font-bold text-white">
                       {index + 1}
                     </div>
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="font-semibold text-white">{cliente.nome}</h4>
+                        <h4 className="font-semibold text-chm-text">{cliente.nome}</h4>
                         <HealthScoreBadge score={cliente.healthScore} />
                       </div>
-                      <p className="mt-2 text-sm text-slate-300">{getRecommendedAction(cliente)}</p>
+                      <p className="mt-2 text-sm leading-6 text-chm-muted">{getRecommendedAction(cliente)}</p>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {getRiskReasons(cliente).slice(0, 3).map((reason) => (
                           <span
                             key={reason}
-                            className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-xs text-amber-100"
+                            className="chm-chip border-amber-500/20 bg-amber-500/10 text-amber-100"
                           >
                             {reason}
                           </span>
                         ))}
                       </div>
                       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-chm-muted">
-                        <span>{maskValue(formatCurrency(cliente.valorMensalidade))} / mes</span>
+                        <span>{maskValue(formatCurrency(cliente.valorMensalidade))} / mês</span>
                         <a
                           href={buildWhatsAppUrl(cliente.telefone, message)}
                           target="_blank"
                           rel="noreferrer"
-                          className="rounded-md bg-chm-whatsapp px-2.5 py-1.5 font-semibold text-white hover:bg-green-600"
+                          className="rounded-md bg-chm-whatsapp px-2.5 py-1.5 font-semibold text-white transition hover:bg-green-600"
                         >
                           WhatsApp
                         </a>
@@ -206,33 +201,33 @@ export default function Dashboard() {
         </section>
 
         <aside className="space-y-6">
-          <section className="rounded-md border border-slate-800 bg-chm-card p-5">
-            <h3 className="text-lg font-semibold">Mapa da carteira</h3>
-            <p className="text-sm text-chm-muted">Distribuicao por nivel de saude.</p>
+          <section className="chm-surface p-5">
+            <h3 className="text-lg font-semibold text-chm-text">Mapa da carteira</h3>
+            <p className="text-sm text-chm-muted">Distribuição por nível de saúde.</p>
             <div className="mt-4 grid gap-3">
-              <div className="rounded-md border border-red-500/20 bg-red-500/10 p-4">
+              <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-red-200">Risco</p>
                 <p className="mt-2 text-3xl font-bold text-red-200">{buckets.risco.length}</p>
               </div>
-              <div className="rounded-md border border-amber-500/20 bg-amber-500/10 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-amber-200">Atencao</p>
+              <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-200">Atenção</p>
                 <p className="mt-2 text-3xl font-bold text-amber-200">{buckets.atencao.length}</p>
               </div>
-              <div className="rounded-md border border-emerald-500/20 bg-emerald-500/10 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-200">Saudavel</p>
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-200">Saudável</p>
                 <p className="mt-2 text-3xl font-bold text-emerald-200">{buckets.saudavel.length}</p>
               </div>
             </div>
           </section>
 
-          <section className="rounded-md border border-slate-800 bg-chm-card p-5">
-            <h3 className="text-lg font-semibold">Motivos de cancelamento</h3>
-            <p className="text-sm text-chm-muted">Padroes que merecem correcao na operacao.</p>
+          <section className="chm-surface p-5">
+            <h3 className="text-lg font-semibold text-chm-text">Motivos de cancelamento</h3>
+            <p className="text-sm text-chm-muted">Padrões que merecem correção na operação.</p>
             <div className="mt-4 space-y-3">
               {patterns.map((pattern) => (
-                <div key={pattern.title} className="rounded-md bg-slate-950/65 p-3">
+                <div key={pattern.title} className="rounded-xl bg-slate-950/50 p-3">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="font-semibold">{pattern.title}</p>
+                    <p className="font-semibold text-chm-text">{pattern.title}</p>
                     <span className="text-sm text-chm-accent">{pattern.count}</span>
                   </div>
                   <p className="mt-1 text-xs leading-relaxed text-chm-muted">{pattern.description}</p>

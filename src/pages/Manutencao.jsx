@@ -29,7 +29,7 @@ const priorityOrder = { CRITICA: 0, ALTA: 1, MEDIA: 2, BAIXA: 3 };
 function parseApiError(err) {
   const data = err?.response?.data;
   const details = Array.isArray(data?.details) ? data.details : [];
-  return [data?.message, ...details].filter(Boolean).join(' ') || 'Nao foi possivel salvar manutencao.';
+  return [data?.message, ...details].filter(Boolean).join(' ') || 'Não foi possível salvar manutenção.';
 }
 
 function buildPayload(form) {
@@ -59,7 +59,7 @@ export default function Manutencao() {
     try {
       setManutencoes(await listarManutencoes());
     } catch (err) {
-      setError('Nao foi possivel carregar manutencoes.');
+      setError('Não foi possível carregar manutenções.');
     } finally {
       setLoading(false);
     }
@@ -144,35 +144,35 @@ export default function Manutencao() {
   }
 
   async function handleDelete(item) {
-    const confirmed = window.confirm(`Excluir manutencao de ${item.equipamento}?`);
+    const confirmed = window.confirm(`Excluir manutenção de ${item.equipamento}?`);
     if (!confirmed) return;
     try {
       await excluirManutencao(item.id);
       await loadManutencoes();
       if (editingId === item.id) startCreate();
     } catch (err) {
-      setError('Nao foi possivel excluir manutencao.');
+      setError('Não foi possível excluir manutenção.');
     }
   }
 
   if (session && !canManageManutencao) {
     return (
       <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
-        Seu usuario nao tem acesso ao gerenciamento de manutencao.
+        Seu usuário não tem acesso ao gerenciamento de manutenção.
       </div>
     );
   }
 
-  if (loading) return <LoadingSpinner label="Carregando manutencoes..." />;
+  if (loading) return <LoadingSpinner label="Carregando manutenções..." />;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">Manutencao</p>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight">Equipamentos com defeito e pendencias</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">Manutenção</p>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight">Equipamentos com defeito e pendências</h2>
           <p className="mt-1 text-sm text-chm-muted">
-            Controle falhas, prioridade, tecnico, custo e prazo de retorno dos equipamentos.
+            Controle falhas, prioridade, técnico, custo e prazo de retorno dos equipamentos.
           </p>
         </div>
         <button
@@ -180,7 +180,7 @@ export default function Manutencao() {
           onClick={startCreate}
           className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
         >
-          Nova manutencao
+          Nova manutenção
         </button>
       </div>
 
@@ -190,7 +190,7 @@ export default function Manutencao() {
           <p className="mt-1 text-2xl font-bold">{stats.abertas}</p>
         </div>
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
-          <p className="text-xs text-chm-muted">Criticas</p>
+          <p className="text-xs text-chm-muted">Críticas</p>
           <p className="mt-1 text-2xl font-bold text-red-300">{stats.criticas}</p>
         </div>
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
@@ -216,7 +216,7 @@ export default function Manutencao() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-chm-accent"
-              placeholder="Buscar equipamento, problema, responsavel ou tecnico"
+              placeholder="Buscar equipamento, problema, responsável ou técnico"
             />
             <select
               value={statusFilter}
@@ -227,15 +227,15 @@ export default function Manutencao() {
               <option value="ABERTA">Aberta</option>
               <option value="AGENDADA">Agendada</option>
               <option value="EM_ANDAMENTO">Em andamento</option>
-              <option value="AGUARDANDO_PECA">Aguardando peca</option>
-              <option value="CONCLUIDA">Concluida</option>
+              <option value="AGUARDANDO_PECA">Aguardando peça</option>
+              <option value="CONCLUIDA">Concluída</option>
               <option value="CANCELADA">Cancelada</option>
             </select>
           </div>
 
           <div className="divide-y divide-slate-800">
             {filteredManutencoes.length === 0 ? (
-              <div className="p-12 text-center text-chm-muted">Nenhuma manutencao encontrada.</div>
+              <div className="p-12 text-center text-chm-muted">Nenhuma manutenção encontrada.</div>
             ) : (
               filteredManutencoes.map((item) => (
                 <article key={item.id} className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1fr)_185px]">
@@ -255,16 +255,16 @@ export default function Manutencao() {
                         {item.status}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-chm-muted">{item.localizacao || 'Local nao informado'}</p>
+                    <p className="mt-1 text-sm text-chm-muted">{item.localizacao || 'Local não informado'}</p>
                     <p className="mt-3 text-sm text-slate-300">{item.problema}</p>
                     <div className="mt-3 grid gap-3 text-sm md:grid-cols-3">
                       <div className="rounded-md bg-slate-950/65 p-3">
-                        <p className="text-xs text-chm-muted">Aberta ha</p>
+                        <p className="text-xs text-chm-muted">Aberta há</p>
                         <p className="mt-1 font-semibold">{item.diasEmAberto} dias</p>
                       </div>
                       <div className="rounded-md bg-slate-950/65 p-3">
-                        <p className="text-xs text-chm-muted">Tecnico</p>
-                        <p className="mt-1 font-semibold">{item.tecnicoFornecedor || 'Nao informado'}</p>
+                        <p className="text-xs text-chm-muted">Técnico</p>
+                        <p className="mt-1 font-semibold">{item.tecnicoFornecedor || 'Não informado'}</p>
                       </div>
                       <div className="rounded-md bg-slate-950/65 p-3">
                         <p className="text-xs text-chm-muted">Custo</p>
@@ -272,7 +272,7 @@ export default function Manutencao() {
                       </div>
                     </div>
                     <div className="mt-3 rounded-md border border-blue-500/20 bg-blue-500/10 p-3 text-sm">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Acao sugerida</p>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Ação sugerida</p>
                       <p className="mt-1 text-slate-200">{item.acaoSugerida}</p>
                     </div>
                   </div>
@@ -280,7 +280,7 @@ export default function Manutencao() {
                     <p className="text-sm text-chm-muted">
                       {item.dataAgendada ? `Agendada: ${item.dataAgendada}` : 'Sem data agendada'}
                     </p>
-                    <p className="text-xs text-chm-muted">{item.responsavel || 'Sem responsavel'}</p>
+                    <p className="text-xs text-chm-muted">{item.responsavel || 'Sem responsável'}</p>
                     <div className="mt-2 flex gap-2">
                       <button
                         type="button"
@@ -305,7 +305,7 @@ export default function Manutencao() {
         </section>
 
         <aside className="rounded-md border border-slate-800/80 bg-chm-card/95 p-5 shadow-xl shadow-black/10">
-          <h3 className="text-lg font-semibold">{editingId ? 'Editar manutencao' : 'Nova manutencao'}</h3>
+          <h3 className="text-lg font-semibold">{editingId ? 'Editar manutenção' : 'Nova manutenção'}</h3>
           <form onSubmit={handleSubmit} className="mt-5 space-y-4">
             <div>
               <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="equipamento">
@@ -321,7 +321,7 @@ export default function Manutencao() {
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="localizacao">
-                Localizacao
+                Localização
               </label>
               <input
                 id="localizacao"
@@ -355,9 +355,9 @@ export default function Manutencao() {
                   className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
                 >
                   <option value="BAIXA">Baixa</option>
-                  <option value="MEDIA">Media</option>
+                  <option value="MEDIA">Média</option>
                   <option value="ALTA">Alta</option>
-                  <option value="CRITICA">Critica</option>
+                  <option value="CRITICA">Crítica</option>
                 </select>
               </div>
               <div>
@@ -373,8 +373,8 @@ export default function Manutencao() {
                   <option value="ABERTA">Aberta</option>
                   <option value="AGENDADA">Agendada</option>
                   <option value="EM_ANDAMENTO">Em andamento</option>
-                  <option value="AGUARDANDO_PECA">Aguardando peca</option>
-                  <option value="CONCLUIDA">Concluida</option>
+                  <option value="AGUARDANDO_PECA">Aguardando peça</option>
+                  <option value="CONCLUIDA">Concluída</option>
                   <option value="CANCELADA">Cancelada</option>
                 </select>
               </div>
@@ -382,7 +382,7 @@ export default function Manutencao() {
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="responsavel">
-                  Responsavel
+                  Responsável
                 </label>
                 <input
                   id="responsavel"
@@ -393,7 +393,7 @@ export default function Manutencao() {
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="tecnicoFornecedor">
-                  Tecnico
+                  Técnico
                 </label>
                 <input
                   id="tecnicoFornecedor"
@@ -432,7 +432,7 @@ export default function Manutencao() {
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="dataConclusao">
-                  Conclusao
+                  Conclusão
                 </label>
                 <input
                   id="dataConclusao"
@@ -459,7 +459,7 @@ export default function Manutencao() {
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="observacoes">
-                Observacoes
+                Observações
               </label>
               <textarea
                 id="observacoes"

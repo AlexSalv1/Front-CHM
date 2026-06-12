@@ -11,13 +11,13 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import useAppContext from '../hooks/useAppContext';
 
 const emptyForm = {
-  nome: 'Pesquisa de satisfacao',
+  nome: 'Pesquisa de satisfação',
   intervaloDias: 30,
   ativa: true,
-  assunto: 'Queremos ouvir sua opiniao',
-  perguntaSatisfacao: 'De 1 a 10, qual sua satisfacao com a academia?',
-  perguntaMelhoria: 'O que poderia melhorar na sua experiencia?',
-  perguntaLivre: 'Quer deixar mais algum comentario?',
+  assunto: 'Queremos ouvir sua opinião',
+  perguntaSatisfacao: 'De 1 a 10, qual sua satisfação com a academia?',
+  perguntaMelhoria: 'O que poderia melhorar na sua experiência?',
+  perguntaLivre: 'Quer deixar mais algum comentário?',
   proximoEnvioEm: '',
 };
 
@@ -31,7 +31,7 @@ function toPayloadDateTime(value) {
 }
 
 function formatDateTime(value) {
-  if (!value) return 'Nao programado';
+  if (!value) return 'Não programado';
   return new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'short',
     timeStyle: 'short',
@@ -41,7 +41,7 @@ function formatDateTime(value) {
 function parseApiError(err) {
   const data = err?.response?.data;
   const details = Array.isArray(data?.details) ? data.details : [];
-  return [data?.message, ...details].filter(Boolean).join(' ') || 'Nao foi possivel concluir a acao.';
+  return [data?.message, ...details].filter(Boolean).join(' ') || 'Não foi possível concluir a ação.';
 }
 
 export default function Feedback() {
@@ -66,7 +66,7 @@ export default function Feedback() {
       setCampanhas(campanhasData);
       setRespostas(respostasData);
     } catch (err) {
-      setError('Nao foi possivel carregar Feedback.');
+      setError('Não foi possível carregar Feedback.');
     } finally {
       setLoading(false);
     }
@@ -166,14 +166,14 @@ export default function Feedback() {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      setError('Nao foi possivel exportar as respostas.');
+      setError('Não foi possível exportar as respostas.');
     }
   }
 
   if (session && !canManageTeam) {
     return (
       <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
-        Esta area e exclusiva do gestor.
+        Esta área é exclusiva do gestor.
       </div>
     );
   }
@@ -186,7 +186,7 @@ export default function Feedback() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">Feedback</p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight">Pesquisas inteligentes</h2>
-          <p className="mt-1 text-sm text-chm-muted">Envie pesquisas por e-mail e acompanhe respostas anonimas.</p>
+          <p className="mt-1 text-sm text-chm-muted">Envie pesquisas por e-mail e acompanhe respostas anônimas.</p>
         </div>
         <button
           type="button"
@@ -203,11 +203,11 @@ export default function Feedback() {
           <p className="mt-1 text-2xl font-bold">{resumo.total}</p>
         </div>
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
-          <p className="text-xs text-chm-muted">Satisfacao media</p>
+          <p className="text-xs text-chm-muted">Satisfação média</p>
           <p className="mt-1 text-2xl font-bold text-chm-accent">{resumo.media}</p>
         </div>
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
-          <p className="text-xs text-chm-muted">Notas criticas</p>
+          <p className="text-xs text-chm-muted">Notas críticas</p>
           <p className="mt-1 text-2xl font-bold text-red-300">{resumo.criticas}</p>
         </div>
       </div>
@@ -236,7 +236,7 @@ export default function Feedback() {
                 <input id="intervaloDias" type="number" min="1" max="365" value={form.intervaloDias} onChange={(event) => updateForm('intervaloDias', event.target.value)} className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent" required />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="proximoEnvioEm">Proximo envio</label>
+                <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="proximoEnvioEm">Próximo envio</label>
                 <input id="proximoEnvioEm" type="datetime-local" value={form.proximoEnvioEm} onChange={(event) => updateForm('proximoEnvioEm', event.target.value)} className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent" />
               </div>
             </div>
@@ -249,9 +249,9 @@ export default function Feedback() {
               <input id="assunto" value={form.assunto} onChange={(event) => updateForm('assunto', event.target.value)} className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent" required />
             </div>
             {[
-              ['perguntaSatisfacao', 'Pergunta de satisfacao'],
-              ['perguntaMelhoria', 'Pergunta anonima de melhoria'],
-              ['perguntaLivre', 'Pergunta anonima livre'],
+              ['perguntaSatisfacao', 'Pergunta de satisfação'],
+              ['perguntaMelhoria', 'Pergunta anônima de melhoria'],
+              ['perguntaLivre', 'Pergunta anônima livre'],
             ].map(([field, label]) => (
               <div key={field}>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor={field}>{label}</label>
@@ -278,9 +278,9 @@ export default function Feedback() {
                     <div>
                       <p className="font-semibold text-white">{campanha.nome}</p>
                       <p className="mt-1 text-sm text-chm-muted">
-                        A cada {campanha.intervaloDias} dias | {campanha.ativa ? 'Ativa' : 'Pausada'} | Proximo: {formatDateTime(campanha.proximoEnvioEm)}
+                        A cada {campanha.intervaloDias} dias | {campanha.ativa ? 'Ativa' : 'Pausada'} | Próximo: {formatDateTime(campanha.proximoEnvioEm)}
                       </p>
-                      <p className="mt-1 text-xs text-chm-muted">Ultimo envio: {formatDateTime(campanha.ultimoEnvioEm)}</p>
+                      <p className="mt-1 text-xs text-chm-muted">Último envio: {formatDateTime(campanha.ultimoEnvioEm)}</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <button type="button" onClick={() => startEdit(campanha)} className="rounded-md border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-800">Editar</button>
@@ -301,9 +301,9 @@ export default function Feedback() {
                 <thead className="bg-slate-950/60 text-xs uppercase tracking-wide text-chm-muted">
                   <tr>
                     <th className="px-4 py-3 font-medium">Data</th>
-                    <th className="px-4 py-3 font-medium">Satisfacao</th>
-                    <th className="px-4 py-3 font-medium">Melhoria anonima</th>
-                    <th className="px-4 py-3 font-medium">Comentario anonimo</th>
+                    <th className="px-4 py-3 font-medium">Satisfação</th>
+                    <th className="px-4 py-3 font-medium">Melhoria anônima</th>
+                    <th className="px-4 py-3 font-medium">Comentário anônimo</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -13,7 +13,7 @@ const emptyForm = {
 function parseApiError(err) {
   const data = err?.response?.data;
   const details = Array.isArray(data?.details) ? data.details : [];
-  return [data?.message, ...details].filter(Boolean).join(' ') || 'Nao foi possivel enviar sua resposta.';
+  return [data?.message, ...details].filter(Boolean).join(' ') || 'Não foi possível enviar sua resposta.';
 }
 
 export default function FeedbackPublico() {
@@ -33,7 +33,7 @@ export default function FeedbackPublico() {
         if (active) setFormulario(data);
       })
       .catch(() => {
-        if (active) setError('Pesquisa nao encontrada ou indisponivel.');
+        if (active) setError('Pesquisa não encontrada ou indisponível.');
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -78,7 +78,7 @@ export default function FeedbackPublico() {
           {sent ? (
             <div className="py-10 text-center">
               <p className="text-xl font-bold text-white">Resposta enviada.</p>
-              <p className="mt-2 text-sm text-chm-muted">Obrigado por ajudar a melhorar sua experiencia.</p>
+              <p className="mt-2 text-sm text-chm-muted">Obrigado por ajudar a melhorar sua experiência.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -86,7 +86,7 @@ export default function FeedbackPublico() {
 
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-200" htmlFor="satisfacao">
-                  {formulario?.perguntaSatisfacao || 'Qual sua satisfacao?'}
+                  {formulario?.perguntaSatisfacao || 'Qual sua satisfação?'}
                 </label>
                 <div className="flex items-center gap-4">
                   <input
@@ -106,7 +106,7 @@ export default function FeedbackPublico() {
 
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-200" htmlFor="comentarioSatisfacao">
-                  Comentario sobre sua nota
+                  Comentário sobre sua nota
                 </label>
                 <textarea
                   id="comentarioSatisfacao"
@@ -128,7 +128,7 @@ export default function FeedbackPublico() {
                   onChange={(event) => updateForm('respostaMelhoria', event.target.value)}
                   className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
                 />
-                <p className="mt-1 text-xs text-chm-muted">Esta resposta aparece anonima para o gestor.</p>
+                <p className="mt-1 text-xs text-chm-muted">Esta resposta aparece anônima para o gestor.</p>
               </div>
 
               <div>
@@ -142,7 +142,7 @@ export default function FeedbackPublico() {
                   onChange={(event) => updateForm('respostaLivre', event.target.value)}
                   className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
                 />
-                <p className="mt-1 text-xs text-chm-muted">Esta resposta tambem aparece anonima para o gestor.</p>
+                <p className="mt-1 text-xs text-chm-muted">Esta resposta também aparece anônima para o gestor.</p>
               </div>
 
               <button

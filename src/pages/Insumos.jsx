@@ -24,7 +24,7 @@ const priorityOrder = { ALTA: 0, MEDIA: 1, BAIXA: 2, NORMAL: 3 };
 function parseApiError(err) {
   const data = err?.response?.data;
   const details = Array.isArray(data?.details) ? data.details : [];
-  return [data?.message, ...details].filter(Boolean).join(' ') || 'Nao foi possivel salvar insumo.';
+  return [data?.message, ...details].filter(Boolean).join(' ') || 'Não foi possível salvar insumo.';
 }
 
 function buildPayload(form) {
@@ -54,7 +54,7 @@ export default function Insumos() {
     try {
       setInsumos(await listarInsumos());
     } catch (err) {
-      setError('Nao foi possivel carregar insumos.');
+      setError('Não foi possível carregar insumos.');
     } finally {
       setLoading(false);
     }
@@ -143,14 +143,14 @@ export default function Insumos() {
       await loadInsumos();
       if (editingId === insumo.id) startCreate();
     } catch (err) {
-      setError('Nao foi possivel excluir insumo.');
+      setError('Não foi possível excluir insumo.');
     }
   }
 
   if (session && !canManageInsumos) {
     return (
       <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
-        Seu usuario nao tem acesso ao gerenciamento de insumos e compras.
+        Seu usuário não tem acesso ao gerenciamento de insumos e compras.
       </div>
     );
   }
@@ -208,7 +208,7 @@ export default function Insumos() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-chm-accent"
-              placeholder="Buscar item, categoria, fornecedor ou acao"
+              placeholder="Buscar item, categoria, fornecedor ou ação"
             />
             <select
               value={typeFilter}
@@ -218,7 +218,7 @@ export default function Insumos() {
               <option value="TODOS">Todos os tipos</option>
               <option value="MATERIAL">Material</option>
               <option value="EQUIPAMENTO">Equipamento</option>
-              <option value="SERVICO">Servico</option>
+              <option value="SERVICO">Serviço</option>
             </select>
           </div>
 
@@ -255,7 +255,7 @@ export default function Insumos() {
                       </div>
                       <div className="rounded-md bg-slate-950/65 p-3">
                         <p className="text-xs text-chm-muted">Fornecedor</p>
-                        <p className="mt-1 font-semibold">{insumo.fornecedor || 'Nao informado'}</p>
+                        <p className="mt-1 font-semibold">{insumo.fornecedor || 'Não informado'}</p>
                       </div>
                       <div className="rounded-md bg-slate-950/65 p-3">
                         <p className="text-xs text-chm-muted">Valor estimado</p>
@@ -263,7 +263,7 @@ export default function Insumos() {
                       </div>
                     </div>
                     <div className="mt-3 rounded-md border border-blue-500/20 bg-blue-500/10 p-3 text-sm">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Acao sugerida</p>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Ação sugerida</p>
                       <p className="mt-1 text-slate-200">{insumo.acaoSugerida}</p>
                     </div>
                   </div>
@@ -271,7 +271,7 @@ export default function Insumos() {
                     <p className="text-sm text-chm-muted">
                       {insumo.dataProximaCompra ? `Compra: ${insumo.dataProximaCompra}` : 'Sem data planejada'}
                     </p>
-                    <p className="text-xs text-chm-muted">{insumo.responsavel || 'Sem responsavel'}</p>
+                    <p className="text-xs text-chm-muted">{insumo.responsavel || 'Sem responsável'}</p>
                     <div className="mt-2 flex gap-2">
                       <button
                         type="button"
@@ -323,7 +323,7 @@ export default function Insumos() {
                 >
                   <option value="MATERIAL">Material</option>
                   <option value="EQUIPAMENTO">Equipamento</option>
-                  <option value="SERVICO">Servico</option>
+                  <option value="SERVICO">Serviço</option>
                 </select>
               </div>
               <div>
@@ -340,7 +340,7 @@ export default function Insumos() {
                   <option value="BAIXO_ESTOQUE">Baixo estoque</option>
                   <option value="COMPRA_PLANEJADA">Compra planejada</option>
                   <option value="COMPRADO">Comprado</option>
-                  <option value="MANUTENCAO">Manutencao</option>
+                  <option value="MANUTENCAO">Manutenção</option>
                 </select>
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function Insumos() {
                 value={form.categoria}
                 onChange={(event) => updateForm('categoria', event.target.value)}
                 className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
-                placeholder="Limpeza, musculacao, manutencao"
+                placeholder="Limpeza, musculação, manutenção"
                 required
               />
             </div>
@@ -374,7 +374,7 @@ export default function Insumos() {
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="estoqueMinimo">
-                  Minimo
+                  Mínimo
                 </label>
                 <input
                   id="estoqueMinimo"
@@ -428,7 +428,7 @@ export default function Insumos() {
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="dataProximaCompra">
-                  Proxima compra
+                  Próxima compra
                 </label>
                 <input
                   id="dataProximaCompra"
@@ -440,7 +440,7 @@ export default function Insumos() {
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="responsavel">
-                  Responsavel
+                  Responsável
                 </label>
                 <input
                   id="responsavel"
@@ -452,7 +452,7 @@ export default function Insumos() {
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="observacoes">
-                Observacoes
+                Observações
               </label>
               <textarea
                 id="observacoes"

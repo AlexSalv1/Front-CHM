@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login, register } from '../api/authApi';
+import { verificarSessao } from '../api/authSessionApi';
 
 function parseApiError(err) {
   const data = err?.response?.data;
@@ -22,6 +23,19 @@ function normalizeFieldName(field) {
   return field?.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+function InputField({ label, name, error, children, hint }) {
+  return (
+    <div>
+      <label htmlFor={name} className="mb-2 block text-sm font-medium text-chm-text">
+        {label}
+      </label>
+      {children}
+      {hint && <p className="mt-2 text-xs text-chm-muted">{hint}</p>}
+      {error && <p className="mt-2 text-xs text-red-300">{error}</p>}
+    </div>
+  );
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const [mode, setMode] = useState('login');
@@ -33,6 +47,7 @@ export default function Login() {
   const [ramoAtividade, setRamoAtividade] = useState('ACADEMIA');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [errorDetails, setErrorDetails] = useState([]);
   const [fieldErrors, setFieldErrors] = useState({});
 
@@ -40,12 +55,13 @@ export default function Login() {
     event.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
     setErrorDetails([]);
     setFieldErrors({});
 
     try {
       if (mode === 'register') {
-        await register({
+        const result = await register({
           nome: nome.trim(),
           email: email.trim(),
           senha,
@@ -53,10 +69,15 @@ export default function Login() {
           cnpj: cnpj.replace(/\D/g, ''),
           ramoAtividade,
         });
+        setSuccess(result?.message || 'Cadastro recebido. Aguarde a aprovação do administrador.');
+        setMode('login');
+        setSenha('');
+        return;
       } else {
         await login(email.trim(), senha);
       }
-      navigate('/dashboard');
+      const session = await verificarSessao();
+      navigate(session?.superAdmin ? '/admin/assinaturas' : '/dashboard');
     } catch (err) {
       const parsed = parseApiError(err);
       setError(parsed.message);
@@ -77,9 +98,7 @@ export default function Login() {
 
   function inputClass(name) {
     const hasError = Boolean(fieldErrors[normalizeFieldName(name)]);
-    return `w-full rounded-lg border bg-slate-900/80 px-4 py-3 text-white placeholder-slate-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-chm-accent ${
-      hasError ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-slate-600'
-    }`;
+    return `chm-field ${hasError ? 'border-red-500/70 ring-1 ring-red-500/20' : ''}`;
   }
 
   function fieldError(name) {
@@ -87,25 +106,55 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-chm-bg p-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-tight">CHM</h1>
-          <p className="mt-2 text-sm text-chm-muted">Customer Health Management</p>
-        </div>
+    <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
+      <div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-7xl items-center gap-6 lg:grid-cols-[minmax(0,1fr)_460px] lg:gap-10">
+        <section className="hidden chm-surface-strong p-8 lg:block">
+          <p className="chm-kicker">Customer Health Management</p>
+          <h1 className="mt-4 max-w-xl text-4xl font-semibold tracking-tight text-chm-text xl:text-5xl">
+            Uma central de retenção com cara de produto sério.
+          </h1>
+          <p className="mt-4 max-w-xl text-sm leading-6 text-chm-muted xl:text-base">
+            Acompanhe clientes em risco, equipe, insumos, manutenção e feedback em um ambiente mais limpo,
+            organizado e pronto para operação diária.
+          </p>
 
-        <div className="rounded-2xl border border-slate-700/50 bg-chm-card p-8 shadow-2xl">
+          <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
+            {[
+              ['Retenção', 'Health score, risco e próximos passos'],
+              ['Operação', 'Equipe, insumos e manutenção em um só lugar'],
+              ['Acesso', 'Permissões por papel e visual por academia'],
+            ].map(([title, copy]) => (
+              <div key={title} className="chm-surface-soft p-4">
+                <p className="text-sm font-semibold text-chm-text">{title}</p>
+                <p className="mt-2 text-xs leading-relaxed text-chm-muted">{copy}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-2">
+            {['Dashboard executivo', 'Hotbar produtiva', 'Assistente no canto', 'Modo claro e escuro'].map((item) => (
+              <span key={item} className="chm-chip">
+                {item}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        <section className="chm-surface-strong p-6 sm:p-8">
           <div className="mb-6 flex items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold">
-              {mode === 'login' ? 'Acesso do Gestor' : 'Criar conta'}
-            </h2>
+            <div>
+              <p className="chm-kicker">Acesso do Gestor</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-chm-text">
+                {mode === 'login' ? 'Entrar na conta' : 'Criar nova academia'}
+              </h2>
+            </div>
             <button
               type="button"
               onClick={() => {
                 setError('');
                 setMode(mode === 'login' ? 'register' : 'login');
               }}
-              className="text-sm font-medium text-chm-accent hover:underline"
+              className="text-sm font-semibold text-chm-accent hover:underline"
             >
               {mode === 'login' ? 'Quero me cadastrar' : 'Já tenho conta'}
             </button>
@@ -114,10 +163,12 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === 'register' && (
               <>
-                <div>
-                  <label htmlFor="nome" className="mb-2 block text-sm font-medium text-slate-300">
-                    Seu nome
-                  </label>
+                <InputField
+                  label="Seu nome"
+                  name="nome"
+                  error={fieldError('nome')}
+                  hint="Vai aparecer como responsável da conta."
+                >
                   <input
                     id="nome"
                     type="text"
@@ -128,13 +179,14 @@ export default function Login() {
                     className={inputClass('nome')}
                     placeholder="Nome do gestor"
                   />
-                  {fieldError('nome') && <p className="mt-2 text-xs text-red-300">{fieldError('nome')}</p>}
-                </div>
+                </InputField>
 
-                <div>
-                  <label htmlFor="nomeEmpresa" className="mb-2 block text-sm font-medium text-slate-300">
-                    Nome da empresa
-                  </label>
+                <InputField
+                  label="Nome da empresa"
+                  name="nomeEmpresa"
+                  error={fieldError('nomeEmpresa')}
+                  hint="Use o nome comercial da academia."
+                >
                   <input
                     id="nomeEmpresa"
                     type="text"
@@ -143,17 +195,11 @@ export default function Login() {
                     value={nomeEmpresa}
                     onChange={(e) => setNomeEmpresa(e.target.value)}
                     className={inputClass('nomeEmpresa')}
-                    placeholder="Empresa Exemplo LTDA"
+                    placeholder="Academia Exemplo"
                   />
-                  {fieldError('nomeEmpresa') && (
-                    <p className="mt-2 text-xs text-red-300">{fieldError('nomeEmpresa')}</p>
-                  )}
-                </div>
+                </InputField>
 
-                <div>
-                  <label htmlFor="cnpj" className="mb-2 block text-sm font-medium text-slate-300">
-                    CNPJ
-                  </label>
+                <InputField label="CNPJ" name="cnpj" error={fieldError('cnpj')}>
                   <input
                     id="cnpj"
                     type="text"
@@ -165,13 +211,9 @@ export default function Login() {
                     className={inputClass('cnpj')}
                     placeholder="00.000.000/0000-00"
                   />
-                  {fieldError('cnpj') && <p className="mt-2 text-xs text-red-300">{fieldError('cnpj')}</p>}
-                </div>
+                </InputField>
 
-                <div>
-                  <label htmlFor="ramoAtividade" className="mb-2 block text-sm font-medium text-slate-300">
-                    Ramo de atividade
-                  </label>
+                <InputField label="Ramo de atividade" name="ramoAtividade" error={fieldError('ramoAtividade')}>
                   <select
                     id="ramoAtividade"
                     value={ramoAtividade}
@@ -181,17 +223,11 @@ export default function Login() {
                     <option value="ACADEMIA">Academia</option>
                     <option value="CONTABILIDADE">Contabilidade</option>
                   </select>
-                  {fieldError('ramoAtividade') && (
-                    <p className="mt-2 text-xs text-red-300">{fieldError('ramoAtividade')}</p>
-                  )}
-                </div>
+                </InputField>
               </>
             )}
 
-            <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-300">
-                E-mail
-              </label>
+            <InputField label="E-mail" name="email" error={fieldError('email')}>
               <input
                 id="email"
                 type="email"
@@ -202,13 +238,9 @@ export default function Login() {
                 className={inputClass('email')}
                 placeholder="gestor@empresa.com"
               />
-              {fieldError('email') && <p className="mt-2 text-xs text-red-300">{fieldError('email')}</p>}
-            </div>
+            </InputField>
 
-            <div>
-              <label htmlFor="senha" className="mb-2 block text-sm font-medium text-slate-300">
-                Senha
-              </label>
+            <InputField label="Senha" name="senha" error={fieldError('senha')}>
               <input
                 id="senha"
                 type="password"
@@ -220,12 +252,11 @@ export default function Login() {
                 className={inputClass('senha')}
                 placeholder="********"
               />
-              {fieldError('senha') && <p className="mt-2 text-xs text-red-300">{fieldError('senha')}</p>}
-            </div>
+            </InputField>
 
             {error && (
-              <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
-                <p className="font-medium">{error}</p>
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+                <p className="font-semibold">{error}</p>
                 {errorDetails.length > 0 && (
                   <ul className="mt-2 space-y-1 text-xs text-red-200/90">
                     {errorDetails.map((detail) => (
@@ -236,19 +267,27 @@ export default function Login() {
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-chm-accent px-4 py-3 font-medium text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {loading ? (mode === 'login' ? 'Entrando...' : 'Criando conta...') : (mode === 'login' ? 'Entrar' : 'Criar conta')}
+            {success && (
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm font-semibold text-emerald-100">
+                {success}
+              </div>
+            )}
+
+            <button type="submit" disabled={loading} className="chm-action-primary w-full py-3">
+              {loading
+                ? mode === 'login'
+                  ? 'Entrando...'
+                  : 'Criando conta...'
+                : mode === 'login'
+                  ? 'Entrar'
+                  : 'Criar conta'}
             </button>
           </form>
-        </div>
 
-        <p className="mt-6 text-center text-xs text-chm-muted">
-          Autenticação segura via Cookie HttpOnly (withCredentials)
-        </p>
+          <p className="mt-6 text-center text-xs text-chm-muted">
+            Autenticação segura via Cookie HttpOnly (withCredentials)
+          </p>
+        </section>
       </div>
     </div>
   );

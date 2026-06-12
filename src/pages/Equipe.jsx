@@ -105,13 +105,13 @@ export default function Equipe() {
     if (usuariosResult.status === 'fulfilled') {
       setUsuarios(usuariosResult.value);
     } else {
-      errors.push('Nao foi possivel carregar os usuarios da equipe.');
+      errors.push('Não foi possível carregar os usuários da equipe.');
     }
 
     if (funcionariosResult.status === 'fulfilled') {
       setFuncionarios(funcionariosResult.value);
     } else {
-      errors.push('Nao foi possivel carregar os funcionarios.');
+      errors.push('Não foi possível carregar os funcionários.');
     }
 
     setError(errors.join(' '));
@@ -210,7 +210,7 @@ export default function Equipe() {
       await loadData();
       await refreshSession();
     } catch (err) {
-      setError(parseApiError(err, 'Nao foi possivel salvar usuario.'));
+      setError(parseApiError(err, 'Não foi possível salvar usuário.'));
     } finally {
       setSaving(false);
     }
@@ -230,7 +230,7 @@ export default function Equipe() {
       closeModal();
       await loadData();
     } catch (err) {
-      setError(parseApiError(err, 'Nao foi possivel salvar funcionario.'));
+      setError(parseApiError(err, 'Não foi possível salvar funcionário.'));
     } finally {
       setSaving(false);
     }
@@ -242,7 +242,7 @@ export default function Equipe() {
       await loadData();
       await refreshSession();
     } catch (err) {
-      setError(parseApiError(err, 'Nao foi possivel atualizar o acesso.'));
+      setError(parseApiError(err, 'Não foi possível atualizar o acesso.'));
     }
   }
 
@@ -252,7 +252,7 @@ export default function Equipe() {
       await loadData();
       await refreshSession();
     } catch (err) {
-      setError(parseApiError(err, 'Nao foi possivel atualizar o acesso financeiro.'));
+      setError(parseApiError(err, 'Não foi possível atualizar o acesso financeiro.'));
     }
   }
 
@@ -262,7 +262,7 @@ export default function Equipe() {
       await loadData();
       await refreshSession();
     } catch (err) {
-      setError(parseApiError(err, 'Nao foi possivel atualizar o acesso aos insumos.'));
+      setError(parseApiError(err, 'Não foi possível atualizar o acesso aos insumos.'));
     }
   }
 
@@ -272,12 +272,12 @@ export default function Equipe() {
       await loadData();
       await refreshSession();
     } catch (err) {
-      setError(parseApiError(err, 'Nao foi possivel atualizar o acesso a manutencao.'));
+      setError(parseApiError(err, 'Não foi possível atualizar o acesso à manutenção.'));
     }
   }
 
   async function handleDeleteFuncionario(funcionario) {
-    const confirmed = window.confirm(`Excluir ${funcionario.nome} do quadro de funcionarios?`);
+    const confirmed = window.confirm(`Excluir ${funcionario.nome} do quadro de funcionários?`);
     if (!confirmed) return;
 
     try {
@@ -287,28 +287,28 @@ export default function Equipe() {
         closeModal();
       }
     } catch (err) {
-      setError('Nao foi possivel excluir funcionario.');
+      setError('Não foi possível excluir funcionário.');
     }
   }
 
   if (session && !canManageTeam) {
     return (
       <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
-        Seu usuario nao tem acesso a gestao de equipe.
+        Seu usuário não tem acesso à gestão de equipe.
       </div>
     );
   }
 
-  if (loading) return <LoadingSpinner label="Carregando gestao da equipe..." />;
+  if (loading) return <LoadingSpinner label="Carregando gestão da equipe..." />;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">Equipe</p>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight">Gestao de acessos e funcionarios</h2>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight">Gestão de acessos e funcionários</h2>
           <p className="mt-1 text-sm text-chm-muted">
-            Controle usuarios, permissao de acesso, quadro operacional, horarios e informacoes burocraticas em uma unica tela.
+            Controle usuários, permissões de acesso, quadro operacional, horários e informações burocráticas em uma única tela.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -317,7 +317,7 @@ export default function Equipe() {
             onClick={openUsuarioModal}
             className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
           >
-            Novo usuario
+            Novo usuário
           </button>
           <button
             type="button"
@@ -331,7 +331,7 @@ export default function Equipe() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
-          <p className="text-xs text-chm-muted">Usuarios de acesso</p>
+          <p className="text-xs text-chm-muted">Usuários de acesso</p>
           <p className="mt-1 text-2xl font-bold">{usuarios.length}</p>
         </div>
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
@@ -339,7 +339,7 @@ export default function Equipe() {
           <p className="mt-1 text-2xl font-bold text-chm-accent">{stats.atendentes}</p>
         </div>
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
-          <p className="text-xs text-chm-muted">Funcionarios ativos</p>
+          <p className="text-xs text-chm-muted">Funcionários ativos</p>
           <p className="mt-1 text-2xl font-bold text-emerald-300">{stats.funcionariosAtivos}</p>
         </div>
         <div className="rounded-md border border-slate-800 bg-slate-950/70 p-4">
@@ -371,16 +371,16 @@ export default function Equipe() {
             activeTab === 'funcionarios' ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800'
           }`}
         >
-          Funcionarios
+          Funcionários
         </button>
       </div>
 
       {activeTab === 'usuarios' ? (
         <section className="rounded-md border border-slate-800/80 bg-chm-card/95 shadow-xl shadow-black/10">
           <div className="border-b border-slate-800 px-4 py-4">
-            <h3 className="text-lg font-semibold">Usuarios da academia</h3>
+            <h3 className="text-lg font-semibold">Usuários da academia</h3>
             <p className="mt-1 text-sm text-chm-muted">
-              Crie acessos para atendentes e gestores, com permissoes separadas para cada rotina.
+              Crie acessos para atendentes e gestores, com permissões separadas para cada rotina.
             </p>
           </div>
 
@@ -388,20 +388,20 @@ export default function Equipe() {
             <table className="min-w-full text-left text-sm">
               <thead className="bg-slate-950/60 text-xs uppercase tracking-wide text-chm-muted">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Usuario</th>
+                  <th className="px-4 py-3 font-medium">Usuário</th>
                   <th className="px-4 py-3 font-medium">Papel</th>
                   <th className="px-4 py-3 font-medium">Financeiro</th>
                   <th className="px-4 py-3 font-medium">Insumos</th>
-                  <th className="px-4 py-3 font-medium">Manutencao</th>
+                  <th className="px-4 py-3 font-medium">Manutenção</th>
                   <th className="px-4 py-3 font-medium">Status</th>
-                  <th className="px-4 py-3 font-medium">Acoes</th>
+                  <th className="px-4 py-3 font-medium">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {usuarios.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-10 text-center text-chm-muted">
-                      Nenhum usuario cadastrado.
+                      Nenhum usuário cadastrado.
                     </td>
                   </tr>
                 ) : (
@@ -471,7 +471,7 @@ export default function Equipe() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-chm-accent"
-              placeholder="Buscar nome, cargo, funcao ou contato"
+              placeholder="Buscar nome, cargo, função ou contato"
             />
             <select
               value={statusFilter}
@@ -481,7 +481,7 @@ export default function Equipe() {
               <option value="TODOS">Todos</option>
               <option value="ATIVO">Ativo</option>
               <option value="AFASTADO">Afastado</option>
-              <option value="FERIAS">Ferias</option>
+              <option value="FERIAS">Férias</option>
               <option value="DESLIGADO">Desligado</option>
             </select>
           </div>
@@ -491,19 +491,19 @@ export default function Equipe() {
               <table className="min-w-full text-left text-sm">
                 <thead className="bg-slate-950/60 text-xs uppercase tracking-wide text-chm-muted">
                   <tr>
-                    <th className="px-4 py-3 font-medium">Funcionario</th>
-                    <th className="px-4 py-3 font-medium">Cargo/funcao</th>
-                    <th className="px-4 py-3 font-medium">Horario</th>
+                    <th className="px-4 py-3 font-medium">Funcionário</th>
+                    <th className="px-4 py-3 font-medium">Cargo/função</th>
+                    <th className="px-4 py-3 font-medium">Horário</th>
                     <th className="px-4 py-3 font-medium">Contrato</th>
                     <th className="px-4 py-3 font-medium">Folha</th>
-                    <th className="px-4 py-3 font-medium">Acoes</th>
+                    <th className="px-4 py-3 font-medium">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredFuncionarios.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="px-4 py-10 text-center text-chm-muted">
-                        Nenhum funcionario encontrado.
+                        Nenhum funcionário encontrado.
                       </td>
                     </tr>
                   ) : (
@@ -515,15 +515,15 @@ export default function Equipe() {
                         </td>
                         <td className="px-4 py-4">
                           <p>{funcionario.cargo}</p>
-                          <p className="text-xs text-chm-muted">{funcionario.funcao || 'Funcao nao detalhada'}</p>
+                          <p className="text-xs text-chm-muted">{funcionario.funcao || 'Função não detalhada'}</p>
                         </td>
                         <td className="px-4 py-4">
                           <p>
                             {funcionario.horarioInicio && funcionario.horarioFim
                               ? `${funcionario.horarioInicio} - ${funcionario.horarioFim}`
-                              : 'Nao informado'}
+                              : 'Não informado'}
                           </p>
-                          <p className="text-xs text-chm-muted">{funcionario.diasTrabalho || 'Dias nao informados'}</p>
+                          <p className="text-xs text-chm-muted">{funcionario.diasTrabalho || 'Dias não informados'}</p>
                         </td>
                         <td className="px-4 py-4">
                           <p>{funcionario.tipoContrato}</p>
@@ -560,8 +560,8 @@ export default function Equipe() {
 
       {modalMode === 'usuario' && (
         <ModalShell
-          title="Novo usuario"
-          subtitle="Crie um acesso para atendente ou gestor sem expor dados desnecessarios."
+          title="Novo usuário"
+          subtitle="Crie um acesso para atendente ou gestor sem expor dados desnecessários."
           onClose={closeModal}
         >
           <form onSubmit={handleUsuarioSubmit} className="space-y-4">
@@ -645,14 +645,14 @@ export default function Equipe() {
                 onChange={(event) => updateUsuarioForm('podeGerenciarManutencao', event.target.checked)}
                 className="h-4 w-4 rounded border-slate-700 bg-slate-900"
               />
-              Permitir gerenciar manutencao
+              Permitir gerenciar manutenção
             </label>
             <button
               type="submit"
               disabled={saving}
               className="w-full rounded-md bg-chm-accent px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {saving ? 'Salvando...' : 'Criar usuario'}
+              {saving ? 'Salvando...' : 'Criar usuário'}
             </button>
           </form>
         </ModalShell>
@@ -660,8 +660,8 @@ export default function Equipe() {
 
       {modalMode === 'funcionario' && (
         <ModalShell
-          title={editingFuncionarioId ? 'Editar funcionario' : 'Novo funcionario'}
-          subtitle="Organize horarios, cargos e informacoes burocraticas em um formulario simples."
+          title={editingFuncionarioId ? 'Editar funcionário' : 'Novo funcionário'}
+          subtitle="Organize horários, cargos e informações burocráticas em um formulário simples."
           onClose={closeModal}
         >
           <form onSubmit={handleFuncionarioSubmit} className="space-y-4">
@@ -693,14 +693,14 @@ export default function Equipe() {
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="func-funcao">
-                  Funcao
+                  Função
                 </label>
                 <input
                   id="func-funcao"
                   value={funcionarioForm.funcao}
                   onChange={(event) => updateFuncionarioForm('funcao', event.target.value)}
                   className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-chm-accent"
-                  placeholder="Atendimento e retencao"
+                  placeholder="Atendimento e retenção"
                 />
               </div>
             </div>
@@ -734,7 +734,7 @@ export default function Equipe() {
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="func-horarioInicio">
-                  Inicio
+                  Início
                 </label>
                 <input
                   id="func-horarioInicio"
@@ -783,7 +783,7 @@ export default function Equipe() {
                 >
                   <option value="CLT">CLT</option>
                   <option value="PJ">PJ</option>
-                  <option value="ESTAGIO">Estagio</option>
+                  <option value="ESTAGIO">Estágio</option>
                   <option value="FREELANCER">Freelancer</option>
                   <option value="OUTRO">Outro</option>
                 </select>
@@ -800,7 +800,7 @@ export default function Equipe() {
                 >
                   <option value="ATIVO">Ativo</option>
                   <option value="AFASTADO">Afastado</option>
-                  <option value="FERIAS">Ferias</option>
+                  <option value="FERIAS">Férias</option>
                   <option value="DESLIGADO">Desligado</option>
                 </select>
               </div>
@@ -809,7 +809,7 @@ export default function Equipe() {
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="func-admissao">
-                  Admissao
+                  Admissão
                 </label>
                 <input
                   id="func-admissao"
@@ -821,7 +821,7 @@ export default function Equipe() {
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="func-salario">
-                  Salario
+                  Salário
                 </label>
                 <input
                   id="func-salario"
@@ -844,13 +844,13 @@ export default function Equipe() {
                 value={funcionarioForm.documento}
                 onChange={(event) => updateFuncionarioForm('documento', event.target.value)}
                 className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-chm-accent"
-                placeholder="CPF, matricula ou registro"
+                placeholder="CPF, matrícula ou registro"
               />
             </div>
 
             <div>
               <label className="mb-1.5 block text-xs font-medium text-slate-300" htmlFor="func-observacoes">
-                Observacoes burocraticas
+                Observações burocráticas
               </label>
               <textarea
                 id="func-observacoes"

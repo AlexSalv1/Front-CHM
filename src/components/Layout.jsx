@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { logout } from '../api/authApi';
 import { verificarSessao } from '../api/authSessionApi';
 import { buscarBrandingEmpresa } from '../api/empresaApi';
@@ -10,14 +10,14 @@ const assistantTopics = [
     path: '/clientes',
     keywords: ['cliente', 'clientes', 'risco', 'health', 'score', 'saude', 'carteira', 'mensalidade'],
     reply:
-      'Para analisar clientes em risco, abra Clientes. La voce ve health score, motivo do risco, historico e mensagem sugerida.',
+      'Para analisar clientes em risco, abra Clientes. Lá você vê health score, motivo do risco, histórico e mensagem sugerida.',
   },
   {
     label: 'Contatos',
     path: '/tarefas',
     keywords: ['contato', 'contatos', 'whatsapp', 'mensagem', 'tarefa', 'ligar', 'retencao'],
     reply:
-      'Para acompanhar abordagens e mensagens, va para Contatos. Essa area ajuda a organizar quem precisa ser chamado primeiro.',
+      'Para acompanhar abordagens e mensagens, vá para Contatos. Essa área ajuda a organizar quem precisa ser chamado primeiro.',
   },
   {
     label: 'Equipe',
@@ -25,7 +25,7 @@ const assistantTopics = [
     requires: 'team',
     keywords: ['equipe', 'usuario', 'usuarios', 'permissao', 'permissoes', 'funcionario', 'funcionarios', 'atendente', 'acesso'],
     reply:
-      'Para criar usuarios, ajustar permissoes ou gerenciar funcionarios, use Equipe. Essa tela centraliza acessos e quadro operacional.',
+      'Para criar usuários, ajustar permissões ou gerenciar funcionários, use Equipe. Essa tela centraliza acessos e quadro operacional.',
   },
   {
     label: 'Executivo',
@@ -33,7 +33,7 @@ const assistantTopics = [
     requires: 'team',
     keywords: ['executivo', 'dono', 'gestor', 'receita', 'financeiro', 'indicador', 'indicadores', 'perda', 'impacto'],
     reply:
-      'Para uma visao rapida de indicadores do dono ou gestor, va para Executivo. Ali ficam numeros principais e impacto financeiro.',
+      'Para uma visão rápida de indicadores do dono ou gestor, vá para Executivo. Ali ficam números principais e impacto financeiro.',
   },
   {
     label: 'Contratos',
@@ -48,28 +48,28 @@ const assistantTopics = [
     path: '/insumos',
     requires: 'insumos',
     keywords: ['insumo', 'insumos', 'compra', 'compras', 'estoque', 'material', 'materiais', 'fornecedor'],
-    reply: 'Para controlar compras, estoque e itens importantes da operacao, va para Insumos.',
+    reply: 'Para controlar compras, estoque e itens importantes da operação, vá para Insumos.',
   },
   {
-    label: 'Manutencao',
+    label: 'Manutenção',
     path: '/manutencao',
     requires: 'manutencao',
     keywords: ['manutencao', 'equipamento', 'equipamentos', 'defeito', 'quebrado', 'reparo', 'tecnico'],
-    reply: 'Para registrar equipamentos com defeito e acompanhar reparos, va para Manutencao.',
+    reply: 'Para registrar equipamentos com defeito e acompanhar reparos, vá para Manutenção.',
   },
   {
     label: 'Feedback',
     path: '/feedback',
     requires: 'team',
     keywords: ['feedback', 'pesquisa', 'pesquisas', 'satisfacao', 'email', 'anonimo', 'anonima'],
-    reply: 'Para configurar pesquisas por e-mail e acompanhar respostas anonimas, abra Feedback.',
+    reply: 'Para configurar pesquisas por e-mail e acompanhar respostas anônimas, abra Feedback.',
   },
   {
     label: 'Marca',
     path: '/configuracoes',
     requires: 'team',
     keywords: ['marca', 'logo', 'academia', 'nome', 'cor', 'branding', 'visual', 'tema'],
-    reply: 'Para alterar nome, logo e cor da academia, va para Marca.',
+    reply: 'Para alterar nome, logo e cor da academia, vá para Marca.',
   },
 ];
 
@@ -81,9 +81,14 @@ function normalizeText(value) {
 }
 
 const navClass = ({ isActive }) =>
-  `flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition ${
-    isActive ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+  `flex items-center gap-3 rounded-lg border px-3 py-2.5 text-sm font-medium transition ${
+    isActive
+      ? 'border-chm-accent/35 bg-chm-accent/12 text-white shadow-lg shadow-black/10'
+      : 'border-transparent text-slate-300 hover:border-slate-700 hover:bg-white/5 hover:text-white'
   }`;
+
+const hotbarMotionClass =
+  'transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]';
 
 function HotbarIcon({ name }) {
   const common = {
@@ -185,6 +190,7 @@ function HotbarIcon({ name }) {
 
 export default function Layout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [branding, setBranding] = useState({
     nomeComercial: 'CHM',
     logoUrl: '',
@@ -200,7 +206,7 @@ export default function Layout() {
   const [assistantMessages, setAssistantMessages] = useState([
     {
       role: 'assistant',
-      text: 'Oi, eu sou o assistente CHM. Se tiver duvida, eu te levo para a tela certa.',
+      text: 'Oi, eu sou o assistente CHM. Se tiver dúvida, eu te levo para a tela certa.',
     },
   ]);
   const [valuesHidden, setValuesHidden] = useState(
@@ -211,6 +217,7 @@ export default function Layout() {
   );
 
   const canManageTeam = session?.papel === 'GESTOR';
+  const isSuperAdmin = Boolean(session?.superAdmin);
   const canManageInsumos = Boolean(session?.podeGerenciarInsumos);
   const canManageManutencao = Boolean(session?.podeGerenciarManutencao);
   const canViewFinancials = Boolean(session?.podeVerFinanceiro);
@@ -220,6 +227,12 @@ export default function Layout() {
     document.documentElement.style.colorScheme = theme === 'light' ? 'light' : 'dark';
     window.localStorage.setItem('chm_theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (session?.superAdmin && !location.pathname.startsWith('/admin')) {
+      navigate('/admin/assinaturas', { replace: true });
+    }
+  }, [location.pathname, navigate, session?.superAdmin]);
 
   useEffect(() => {
     const hintTimer = window.setTimeout(() => {
@@ -347,18 +360,18 @@ export default function Layout() {
     if (!topic) {
       return {
         text:
-          'Ainda nao encontrei uma pagina exata para essa duvida. Tente citar clientes, equipe, insumos, manutencao, feedback, contratos ou marca.',
+          'Ainda não encontrei uma página exata para essa dúvida. Tente citar clientes, equipe, insumos, manutenção, feedback, contratos ou marca.',
       };
     }
 
     if (!canOpenTopic(topic)) {
       return {
-        text: `Essa area existe em ${topic.label}, mas seu acesso atual nao libera essa pagina. Peca para um gestor habilitar essa permissao em Equipe.`,
+        text: `Essa área existe em ${topic.label}, mas seu acesso atual não libera essa página. Peça para um gestor habilitar essa permissão em Equipe.`,
       };
     }
 
     return {
-      text: `${topic.reply} Vou abrir essa pagina agora.`,
+      text: `${topic.reply} Vou abrir essa página agora.`,
       path: topic.path,
     };
   }
@@ -387,34 +400,44 @@ export default function Layout() {
     setAssistantInput('');
   }
 
-  const navItems = [
-    { to: '/dashboard', label: 'Inicio', icon: 'dashboard', allowed: true },
-    { to: '/executivo', label: 'Executivo', icon: 'executivo', allowed: canManageTeam },
-    { to: '/clientes', label: 'Clientes', icon: 'clientes', allowed: true },
-    { to: '/contratos', label: 'Contratos', icon: 'contratos', allowed: canManageTeam },
-    { to: '/tarefas', label: 'Contatos', icon: 'contatos', allowed: true },
-    { to: '/equipe', label: 'Equipe', icon: 'equipe', allowed: canManageTeam },
-    { to: '/insumos', label: 'Insumos', icon: 'insumos', allowed: canManageInsumos },
-    { to: '/manutencao', label: 'Manutencao', icon: 'manutencao', allowed: canManageManutencao },
-    { to: '/feedback', label: 'Feedback', icon: 'feedback', allowed: canManageTeam },
-    { to: '/configuracoes', label: 'Marca', icon: 'marca', allowed: canManageTeam },
-  ].filter((item) => item.allowed);
+  const navItems = (
+    isSuperAdmin
+      ? [
+          { to: '/admin/assinaturas', label: 'Assinaturas', icon: 'contratos', allowed: true },
+        ]
+      : [
+          { to: '/dashboard', label: 'Início', icon: 'dashboard', allowed: true },
+          { to: '/executivo', label: 'Executivo', icon: 'executivo', allowed: canManageTeam },
+          { to: '/clientes', label: 'Clientes', icon: 'clientes', allowed: true },
+          { to: '/contratos', label: 'Contratos', icon: 'contratos', allowed: canManageTeam },
+          { to: '/tarefas', label: 'Contatos', icon: 'contatos', allowed: true },
+          { to: '/equipe', label: 'Equipe', icon: 'equipe', allowed: canManageTeam },
+          { to: '/insumos', label: 'Insumos', icon: 'insumos', allowed: canManageInsumos },
+          { to: '/manutencao', label: 'Manutenção', icon: 'manutencao', allowed: canManageManutencao },
+          { to: '/feedback', label: 'Feedback', icon: 'feedback', allowed: canManageTeam },
+          { to: '/configuracoes', label: 'Marca', icon: 'marca', allowed: canManageTeam },
+        ]
+  ).filter((item) => item.allowed);
 
   return (
     <div className="min-h-screen bg-transparent text-slate-100">
-      <nav className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/92 backdrop-blur lg:fixed lg:inset-x-0">
+      <nav className="sticky top-0 z-30 border-b border-white/8 bg-slate-950/88 backdrop-blur-xl lg:fixed lg:inset-x-0">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-3 sm:px-5 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
-            <button
-              type="button"
-              onClick={toggleHotbar}
-              title={hotbarOpen ? 'Ocultar hotbar' : 'Abrir hotbar'}
-              aria-label={hotbarOpen ? 'Ocultar hotbar' : 'Abrir hotbar'}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-700 text-slate-300 transition hover:bg-slate-800 hover:text-white sm:h-10 sm:w-auto sm:px-3"
+            <div
+              className={`${hotbarMotionClass} ${
+                hotbarOpen
+                  ? 'pointer-events-none w-0 -translate-x-3 opacity-0'
+                  : 'pointer-events-auto w-9 translate-x-0 opacity-100 sm:w-[78px]'
+              } overflow-hidden`}
             >
-              {hotbarOpen ? (
-                <span className="font-bold">X</span>
-              ) : (
+              <button
+                type="button"
+                onClick={toggleHotbar}
+                title="Abrir hotbar"
+                aria-label="Abrir hotbar"
+                className="chm-action h-9 w-9 shrink-0 px-0 sm:h-10 sm:w-auto sm:px-3"
+              >
                 <>
                   <svg
                     className="h-4 w-4 sm:mr-2"
@@ -431,10 +454,12 @@ export default function Layout() {
                   </svg>
                   <span className="hidden font-bold sm:inline">Menu</span>
                 </>
-              )}
-            </button>
+              </button>
+            </div>
             <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md text-sm font-black text-white sm:h-10 sm:w-10"
+              className={`flex shrink-0 items-center justify-center overflow-hidden rounded-lg text-sm font-black text-white shadow-lg shadow-black/20 ${hotbarMotionClass} ${
+                hotbarOpen ? 'h-10 w-10 translate-x-0 sm:h-11 sm:w-11' : 'h-9 w-9 sm:h-10 sm:w-10'
+              }`}
               style={{ backgroundColor: branding.corPrimaria || '#4f8cff' }}
             >
               {branding.logoUrl ? (
@@ -443,11 +468,17 @@ export default function Layout() {
                 (branding.nomeComercial || 'CH').slice(0, 2).toUpperCase()
               )}
             </div>
-            <div className="min-w-0">
-              <h1 className="max-w-[120px] truncate text-base font-bold tracking-tight sm:max-w-[260px] sm:text-lg">
+            <div className={`min-w-0 ${hotbarMotionClass} ${hotbarOpen ? 'sm:pl-1' : ''}`}>
+              <h1
+                className={`truncate text-base font-bold tracking-tight text-white ${hotbarMotionClass} sm:text-lg ${
+                  hotbarOpen ? 'max-w-[180px] sm:max-w-[320px]' : 'max-w-[140px] sm:max-w-[260px]'
+                }`}
+              >
                 {branding.nomeComercial || 'CHM'}
               </h1>
-              <p className="hidden truncate text-xs text-chm-muted min-[420px]:block">Acompanhe clientes com mais cuidado</p>
+              <p className="hidden truncate text-xs text-chm-muted min-[420px]:block">
+                Acompanhe clientes com mais cuidado
+              </p>
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -456,7 +487,7 @@ export default function Layout() {
               onClick={toggleTheme}
               title={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
               aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
-              className="flex h-9 w-9 items-center justify-center rounded-md border border-slate-700 text-slate-300 transition hover:bg-slate-800 hover:text-white"
+              className="chm-action h-9 w-9 p-0"
             >
               {theme === 'dark' ? (
                 <svg
@@ -500,7 +531,7 @@ export default function Layout() {
                 onClick={toggleValuesHidden}
                 title={valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
                 aria-label={valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
-                className="flex h-9 w-9 items-center justify-center rounded-md border border-slate-700 text-xs font-bold text-slate-300 transition hover:bg-slate-800 hover:text-white"
+                className="chm-action h-9 w-9 p-0 text-xs font-bold"
               >
                 {valuesHidden ? '--' : 'R$'}
               </button>
@@ -508,7 +539,7 @@ export default function Layout() {
             <button
               type="button"
               onClick={handleLogout}
-              className="shrink-0 rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
+              className="chm-action shrink-0 px-3 py-2 text-sm font-medium"
             >
               Sair
             </button>
@@ -516,78 +547,98 @@ export default function Layout() {
         </div>
       </nav>
 
-      {hotbarOpen && (
-        <>
-          <button
-            type="button"
-            aria-label="Fechar hotbar"
-            onClick={toggleHotbar}
-            className="fixed inset-0 z-30 bg-black/45 lg:hidden"
-          />
-          <aside className="fixed left-0 top-[65px] z-40 flex max-h-[calc(100vh-65px)] w-72 flex-col border-r border-slate-800 bg-slate-950/98 p-3 shadow-2xl shadow-black/40 sm:top-[73px] sm:max-h-[calc(100vh-73px)] lg:top-[73px] lg:z-20 lg:h-[calc(100vh-73px)] lg:max-h-none lg:w-64 lg:bg-slate-950/92 lg:shadow-none">
-            <div className="mb-3 flex items-center justify-between px-1">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-chm-muted">Hotbar</p>
-              <button
-                type="button"
-                onClick={toggleHotbar}
-                title="Ocultar hotbar"
-                aria-label="Ocultar hotbar"
-                className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-700 text-sm font-bold text-slate-300 transition hover:bg-slate-800 hover:text-white"
-              >
-                X
-              </button>
-            </div>
-            <div className="space-y-1 overflow-y-auto pr-1">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={navClass}
-                  onClick={() => {
-                    if (window.innerWidth < 1024) setHotbarOpen(false);
-                  }}
-                  title={item.label}
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-900">
-                    <HotbarIcon name={item.icon} />
-                  </span>
-                  <span className="truncate">{item.label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </aside>
-        </>
-      )}
-
-      <main className={`mx-auto max-w-7xl px-3 py-4 transition-[padding] sm:px-5 sm:py-6 lg:px-8 lg:pt-[97px] ${hotbarOpen ? 'lg:pl-72' : ''}`}>
-        <Outlet
-          context={{
-            session,
-            theme,
-            setTheme,
-            canManageTeam,
-            canManageInsumos,
-            canManageManutencao,
-            canViewFinancials,
-            valuesHidden,
-            maskValue,
-            refreshSession,
-          }}
+      <>
+        <button
+          type="button"
+          aria-label="Fechar hotbar"
+          onClick={toggleHotbar}
+          className={`fixed inset-0 z-30 bg-black/45 backdrop-blur-[1px] lg:hidden ${hotbarMotionClass} ${
+            hotbarOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+          }`}
         />
+        <aside
+          className={`fixed left-0 top-[65px] z-40 flex max-h-[calc(100vh-65px)] w-72 flex-col border-r border-white/8 bg-slate-950/96 p-3 shadow-2xl shadow-black/30 sm:top-[73px] sm:max-h-[calc(100vh-73px)] lg:top-[73px] lg:z-20 lg:h-[calc(100vh-73px)] lg:max-h-none lg:w-64 lg:bg-slate-950/88 lg:shadow-none ${hotbarMotionClass} ${
+            hotbarOpen
+              ? 'pointer-events-auto translate-x-0 opacity-100'
+              : 'pointer-events-none -translate-x-full opacity-0 lg:-translate-x-6'
+          }`}
+        >
+          <div className="mb-3 flex items-center justify-between px-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-chm-muted">Hotbar</p>
+            <button
+              type="button"
+              onClick={toggleHotbar}
+              title="Ocultar hotbar"
+              aria-label="Ocultar hotbar"
+              className="chm-action h-8 w-8 p-0 text-sm font-bold"
+            >
+              X
+            </button>
+          </div>
+          <div className={`space-y-1 overflow-y-auto pr-1 ${hotbarMotionClass} ${hotbarOpen ? 'opacity-100 delay-75' : 'opacity-0'}`}>
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={navClass}
+                onClick={() => {
+                  if (window.innerWidth < 1024) setHotbarOpen(false);
+                }}
+                title={item.label}
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white/5">
+                  <HotbarIcon name={item.icon} />
+                </span>
+                <span className="truncate">{item.label}</span>
+              </NavLink>
+            ))}
+          </div>
+        </aside>
+      </>
+
+      <main className={`mx-auto max-w-7xl px-3 py-4 ${hotbarMotionClass} sm:px-5 sm:py-6 lg:px-8 lg:pt-[97px] ${hotbarOpen ? 'lg:pl-72' : ''}`}>
+        {session?.assinaturaBloqueada && !isSuperAdmin ? (
+          <section className="chm-surface-strong mx-auto max-w-2xl p-6 text-center">
+            <p className="chm-kicker">Assinatura bloqueada</p>
+            <h2 className="mt-3 text-2xl font-bold text-chm-text">Acesso temporariamente indisponível</h2>
+            <p className="mt-3 text-sm leading-6 text-chm-muted">
+              A assinatura da empresa está bloqueada. Regularize o pagamento para liberar novamente o dashboard,
+              clientes, equipe e relatórios.
+            </p>
+            <button type="button" onClick={handleLogout} className="chm-action-primary mt-6 px-5 py-2.5">
+              Sair
+            </button>
+          </section>
+        ) : (
+          <Outlet
+            context={{
+              session,
+              theme,
+              setTheme,
+              canManageTeam,
+              canManageInsumos,
+              canManageManutencao,
+              canViewFinancials,
+              valuesHidden,
+              maskValue,
+              refreshSession,
+            }}
+          />
+        )}
       </main>
 
       <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
         {assistantOpen && (
-          <section className="w-[min(calc(100vw-2rem),390px)] rounded-md border border-slate-800 bg-chm-card shadow-2xl shadow-black/30">
-            <div className="flex items-start justify-between gap-3 border-b border-slate-800 p-4">
+          <section className="chm-surface w-[min(calc(100vw-2rem),390px)]">
+            <div className="flex items-start justify-between gap-3 border-b border-white/8 p-4">
               <div className="flex min-w-0 items-center gap-3">
                 <img
                   src="/assistant-bot.svg"
                   alt=""
-                  className="h-11 w-11 shrink-0 rounded-md object-cover"
+                  className="h-11 w-11 shrink-0 rounded-lg object-cover shadow-lg shadow-black/20"
                 />
                 <div className="min-w-0">
-                  <h3 className="font-semibold">Assistente CHM</h3>
+                  <h3 className="font-semibold text-chm-text">Assistente CHM</h3>
                   <p className="truncate text-xs text-chm-muted">Posso te ajudar com o sistema.</p>
                 </div>
               </div>
@@ -595,7 +646,7 @@ export default function Layout() {
                 type="button"
                 onClick={() => setAssistantOpen(false)}
                 aria-label="Fechar assistente"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-slate-700 text-sm font-bold text-slate-300 transition hover:bg-slate-800 hover:text-white"
+                className="chm-action h-8 w-8 shrink-0 p-0 text-sm font-bold"
               >
                 X
               </button>
@@ -608,7 +659,7 @@ export default function Layout() {
                   className={`max-w-[92%] rounded-md px-3 py-2 text-sm ${
                     message.role === 'user'
                       ? 'ml-auto bg-chm-accent text-white'
-                      : 'border border-blue-500/20 bg-blue-500/10 text-slate-200'
+                      : 'border border-blue-500/20 bg-blue-500/10 text-chm-text'
                   }`}
                 >
                   {message.text}
@@ -616,14 +667,14 @@ export default function Layout() {
               ))}
             </div>
 
-            <div className="border-t border-slate-800 p-4">
+            <div className="border-t border-white/8 p-4">
               <div className="mb-3 flex flex-wrap gap-2">
-                {['Ver clientes em risco', 'Criar usuario', 'Configurar feedback'].map((prompt) => (
+                {['Ver clientes em risco', 'Criar usuário', 'Configurar feedback'].map((prompt) => (
                   <button
                     key={prompt}
                     type="button"
                     onClick={() => askAssistant(prompt)}
-                    className="rounded-md border border-slate-700 px-2.5 py-1.5 text-xs font-semibold text-slate-200 transition hover:bg-slate-800"
+                    className="chm-action rounded-md px-2.5 py-1.5 text-xs font-semibold"
                   >
                     {prompt}
                   </button>
@@ -633,12 +684,12 @@ export default function Layout() {
                 <input
                   value={assistantInput}
                   onChange={(event) => setAssistantInput(event.target.value)}
-                  className="min-w-0 flex-1 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
-                  placeholder="Digite sua duvida"
+                  className="chm-field min-w-0 flex-1"
+                  placeholder="Digite sua dúvida"
                 />
                 <button
                   type="submit"
-                  className="rounded-md bg-chm-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-600"
+                  className="chm-action-primary px-3 py-2"
                 >
                   Enviar
                 </button>
@@ -654,7 +705,7 @@ export default function Layout() {
               setAssistantOpen(true);
               setAssistantHintVisible(false);
             }}
-            className="group flex items-center gap-3 rounded-full border border-slate-800 bg-chm-card px-3 py-2 shadow-2xl shadow-black/25 transition hover:-translate-y-0.5 hover:border-chm-accent"
+            className="group flex items-center gap-3 rounded-full border border-white/8 bg-slate-950/90 px-3 py-2 shadow-2xl shadow-black/25 transition hover:-translate-y-0.5 hover:border-chm-accent"
             aria-label="Abrir assistente CHM"
           >
             <span
@@ -662,12 +713,12 @@ export default function Layout() {
                 assistantHintVisible ? 'max-w-[180px] opacity-100' : 'max-w-0 opacity-0'
               }`}
             >
-              Alguma duvida?
+              Alguma dúvida?
             </span>
             <img
               src="/assistant-bot.svg"
               alt=""
-              className="h-12 w-12 rounded-full object-cover"
+              className="h-12 w-12 rounded-full object-cover shadow-lg shadow-black/20"
             />
           </button>
         )}
