@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { login, register } from '../api/authApi';
 
 function parseApiError(err) {
@@ -249,6 +249,15 @@ export default function Login() {
         <p className="mt-6 text-center text-xs text-chm-muted">
           Autenticação segura via Cookie HttpOnly (withCredentials)
         </p>
+
+        <div className="mt-4 text-center">
+          <Link
+            to="/designs"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-700/60 bg-chm-card px-4 py-2 text-sm font-medium text-chm-accent transition hover:border-chm-accent/60"
+          >
+            Ver os 3 designs (sem login)
+          </Link>
+        </div>
       </div>
     </div>
   );
