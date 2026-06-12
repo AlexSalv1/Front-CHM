@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { buscarMetricas, listarClientes } from '../api/clientesApi';
 import HealthScoreBadge from '../components/HealthScoreBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -41,10 +41,98 @@ function MiniTrend({ cliente }) {
   );
 }
 
+const assistantTopics = [
+  {
+    label: 'Clientes em risco',
+    path: '/clientes',
+    keywords: ['cliente', 'clientes', 'risco', 'health', 'score', 'saude', 'carteira', 'mensalidade'],
+    reply:
+      'Para analisar clientes em risco, abra Clientes. La voce ve health score, motivo do risco, historico e mensagem sugerida.',
+  },
+  {
+    label: 'Contatos',
+    path: '/tarefas',
+    keywords: ['contato', 'contatos', 'whatsapp', 'mensagem', 'tarefa', 'ligar', 'retencao'],
+    reply:
+      'Para acompanhar abordagens e mensagens, va para Contatos. Essa area ajuda a organizar quem precisa ser chamado primeiro.',
+  },
+  {
+    label: 'Equipe',
+    path: '/equipe',
+    requires: 'team',
+    keywords: ['equipe', 'usuario', 'usuarios', 'permissao', 'permissoes', 'funcionario', 'funcionarios', 'atendente', 'acesso'],
+    reply:
+      'Para criar usuarios, ajustar permissoes ou gerenciar funcionarios, use Equipe. Essa tela centraliza acessos e quadro operacional.',
+  },
+  {
+    label: 'Executivo',
+    path: '/executivo',
+    requires: 'team',
+    keywords: ['executivo', 'dono', 'gestor', 'receita', 'financeiro', 'indicador', 'indicadores', 'perda', 'impacto'],
+    reply:
+      'Para uma visao rapida de indicadores do dono ou gestor, va para Executivo. Ali ficam numeros principais e impacto financeiro.',
+  },
+  {
+    label: 'Contratos',
+    path: '/contratos',
+    requires: 'team',
+    keywords: ['contrato', 'contratos', 'cancelamento', 'cancelados', 'renovacao', 'renovacoes'],
+    reply:
+      'Para ver contratos novos, mantidos e cancelados, abra Contratos. Essa tela ajuda a enxergar movimento da carteira.',
+  },
+  {
+    label: 'Insumos',
+    path: '/insumos',
+    requires: 'insumos',
+    keywords: ['insumo', 'insumos', 'compra', 'compras', 'estoque', 'material', 'materiais', 'fornecedor'],
+    reply:
+      'Para controlar compras, estoque e itens importantes da operacao, va para Insumos.',
+  },
+  {
+    label: 'Manutencao',
+    path: '/manutencao',
+    requires: 'manutencao',
+    keywords: ['manutencao', 'equipamento', 'equipamentos', 'defeito', 'quebrado', 'reparo', 'tecnico'],
+    reply:
+      'Para registrar equipamentos com defeito e acompanhar reparos, va para Manutencao.',
+  },
+  {
+    label: 'Feedback',
+    path: '/feedback',
+    requires: 'team',
+    keywords: ['feedback', 'pesquisa', 'pesquisas', 'satisfacao', 'email', 'anonimo', 'anonima'],
+    reply:
+      'Para configurar pesquisas por e-mail e acompanhar respostas anonimas, abra Feedback.',
+  },
+  {
+    label: 'Marca',
+    path: '/configuracoes',
+    requires: 'team',
+    keywords: ['marca', 'logo', 'academia', 'nome', 'cor', 'branding', 'visual', 'tema'],
+    reply:
+      'Para alterar nome, logo e cor da academia, va para Marca.',
+  },
+];
+
+function normalizeText(value) {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
 export default function Dashboard() {
-  const { canManageTeam, maskValue } = useAppContext();
+  const navigate = useNavigate();
+  const { canManageTeam, canManageInsumos, canManageManutencao, maskValue } = useAppContext();
   const [clientes, setClientes] = useState([]);
   const [metricas, setMetricas] = useState(null);
+  const [assistantInput, setAssistantInput] = useState('');
+  const [assistantMessages, setAssistantMessages] = useState([
+    {
+      role: 'assistant',
+      text: 'Me pergunte onde encontrar algo ou como usar o CHM. Eu posso te levar direto para a area certa.',
+    },
+  ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -80,6 +168,69 @@ export default function Dashboard() {
     [clientes]
   );
   const patterns = useMemo(() => getCancellationPatterns(clientes), [clientes]);
+
+  function canOpenTopic(topic) {
+    if (topic.requires === 'team') return canManageTeam;
+    if (topic.requires === 'insumos') return canManageInsumos;
+    if (topic.requires === 'manutencao') return canManageManutencao;
+    return true;
+  }
+
+  function answerAssistant(rawQuestion) {
+    const question = normalizeText(rawQuestion);
+    const topic = assistantTopics.find((item) =>
+      item.keywords.some((keyword) => question.includes(keyword))
+    );
+
+    if (!topic) {
+      return {
+        text:
+          'Ainda nao encontrei uma pagina exata para essa duvida. Posso ajudar melhor se voce citar clientes, equipe, insumos, manutencao, feedback, contratos ou marca.',
+      };
+    }
+
+    if (!canOpenTopic(topic)) {
+      return {
+        text: `Essa area existe em ${topic.label}, mas seu acesso atual nao libera essa pagina. Peca para um gestor habilitar essa permissao em Equipe.`,
+      };
+    }
+
+    return {
+      text: `${topic.reply} Vou abrir essa pagina agora.`,
+      path: topic.path,
+    };
+  }
+
+  function handleAssistantSubmit(event) {
+    event.preventDefault();
+    const question = assistantInput.trim();
+    if (!question) return;
+
+    const answer = answerAssistant(question);
+    setAssistantMessages((current) => [
+      ...current,
+      { role: 'user', text: question },
+      { role: 'assistant', text: answer.text },
+    ]);
+    setAssistantInput('');
+
+    if (answer.path) {
+      window.setTimeout(() => navigate(answer.path), 650);
+    }
+  }
+
+  function askAssistant(question) {
+    const answer = answerAssistant(question);
+    setAssistantMessages((current) => [
+      ...current,
+      { role: 'user', text: question },
+      { role: 'assistant', text: answer.text },
+    ]);
+
+    if (answer.path) {
+      window.setTimeout(() => navigate(answer.path), 650);
+    }
+  }
 
   if (loading) return <LoadingSpinner label="Carregando dashboard..." />;
   if (error) return <p className="text-center text-red-400">{error}</p>;
@@ -142,6 +293,65 @@ export default function Dashboard() {
           accent="text-chm-accent"
         />
       </div>
+
+      <section className="rounded-md border border-slate-800 bg-chm-card p-5 shadow-xl shadow-black/10">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">
+              Assistente IA
+            </p>
+            <h3 className="mt-2 text-lg font-semibold">Ajuda rapida para navegar no CHM</h3>
+            <p className="mt-1 max-w-2xl text-sm text-chm-muted">
+              Pergunte sobre uma rotina do sistema e eu te levo para a tela mais provavel.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {['Ver clientes em risco', 'Criar usuario', 'Configurar feedback'].map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                onClick={() => askAssistant(prompt)}
+                className="rounded-md border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-slate-800"
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="max-h-56 space-y-3 overflow-y-auto rounded-md border border-slate-800 bg-slate-950/55 p-3">
+            {assistantMessages.map((message, index) => (
+              <div
+                key={`${message.role}-${index}`}
+                className={`max-w-[92%] rounded-md px-3 py-2 text-sm ${
+                  message.role === 'user'
+                    ? 'ml-auto bg-chm-accent text-white'
+                    : 'border border-blue-500/20 bg-blue-500/10 text-slate-200'
+                }`}
+              >
+                {message.text}
+              </div>
+            ))}
+          </div>
+
+          <form onSubmit={handleAssistantSubmit} className="flex flex-col gap-3">
+            <textarea
+              value={assistantInput}
+              onChange={(event) => setAssistantInput(event.target.value)}
+              rows={4}
+              className="min-h-[112px] w-full resize-none rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
+              placeholder="Ex: como vejo clientes em risco?"
+            />
+            <button
+              type="submit"
+              className="rounded-md bg-chm-accent px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-600"
+            >
+              Perguntar
+            </button>
+          </form>
+        </div>
+      </section>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
         <section className="rounded-md border border-slate-800 bg-chm-card p-5">
