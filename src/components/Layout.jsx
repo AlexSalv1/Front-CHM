@@ -232,7 +232,6 @@ export default function Layout() {
     { to: '/contratos', label: 'Contratos', icon: 'contratos', allowed: canManageTeam },
     { to: '/tarefas', label: 'Contatos', icon: 'contatos', allowed: true },
     { to: '/equipe', label: 'Equipe', icon: 'equipe', allowed: canManageTeam },
-    { to: '/funcionarios', label: 'Funcionarios', icon: 'funcionarios', allowed: canManageTeam },
     { to: '/insumos', label: 'Insumos', icon: 'insumos', allowed: canManageInsumos },
     { to: '/manutencao', label: 'Manutencao', icon: 'manutencao', allowed: canManageManutencao },
     { to: '/feedback', label: 'Feedback', icon: 'feedback', allowed: canManageTeam },

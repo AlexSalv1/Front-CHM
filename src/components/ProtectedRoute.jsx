@@ -11,7 +11,7 @@ export default function ProtectedRoute({ children }) {
     let active = true;
     const warmupMessage = window.setTimeout(() => {
       if (active) {
-        setMessage('Aguardando o servidor responder...');
+        setMessage('Aguarando resposta do Servidor');
       }
     }, 3500);
 
