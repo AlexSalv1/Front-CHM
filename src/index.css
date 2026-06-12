@@ -42,8 +42,7 @@ body::before {
 
 [data-theme='light'] .bg-chm-bg,
 [data-theme='light'] [class*='bg-slate-950'],
-[data-theme='light'] [class*='bg-slate-900'],
-[data-theme='light'] [class*='bg-slate-800'] {
+[data-theme='light'] [class*='bg-slate-900'] {
   background-color: #ffffff !important;
 }
 
@@ -71,6 +70,26 @@ body::before {
 
 [data-theme='light'] .text-chm-accent {
   color: #2563eb !important;
+}
+
+[data-theme='light'] button.bg-white,
+[data-theme='light'] a.bg-white {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+[data-theme='light'] button.bg-white:hover,
+[data-theme='light'] a.bg-white:hover {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+[data-theme='light'] button[class*='hover:bg-slate-800']:hover,
+[data-theme='light'] a[class*='hover:bg-slate-800']:hover {
+  background-color: #eef4ff !important;
+  color: #0f172a !important;
 }
 
 [data-theme='light'] .bg-chm-accent,
