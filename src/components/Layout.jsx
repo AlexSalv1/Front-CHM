@@ -115,6 +115,9 @@ export default function Layout() {
     corPrimaria: '#4f8cff',
   });
   const [session, setSession] = useState(null);
+  const [theme, setTheme] = useState(
+    () => window.localStorage.getItem('chm_theme') || 'dark'
+  );
   const [valuesHidden, setValuesHidden] = useState(
     () => window.localStorage.getItem('chm_values_hidden') === 'true'
   );
@@ -126,6 +129,12 @@ export default function Layout() {
   const canManageInsumos = Boolean(session?.podeGerenciarInsumos);
   const canManageManutencao = Boolean(session?.podeGerenciarManutencao);
   const canViewFinancials = Boolean(session?.podeVerFinanceiro);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme === 'light' ? 'light' : 'dark';
+    window.localStorage.setItem('chm_theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     let active = true;
@@ -220,6 +229,10 @@ export default function Layout() {
     });
   }
 
+  function toggleTheme() {
+    setTheme((current) => (current === 'dark' ? 'light' : 'dark'));
+  }
+
   function maskValue(value) {
     if (!canViewFinancials || valuesHidden) return 'Oculto';
     return value;
@@ -289,6 +302,49 @@ export default function Layout() {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+              aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-slate-700 text-slate-300 transition hover:bg-slate-800 hover:text-white"
+            >
+              {theme === 'dark' ? (
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3v2" />
+                  <path d="M12 19v2" />
+                  <path d="M5 5l1.5 1.5" />
+                  <path d="M17.5 17.5 19 19" />
+                  <path d="M3 12h2" />
+                  <path d="M19 12h2" />
+                  <path d="M5 19l1.5-1.5" />
+                  <path d="M17.5 6.5 19 5" />
+                  <circle cx="12" cy="12" r="4" />
+                </svg>
+              ) : (
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 1 0 9.8 9.8Z" />
+                </svg>
+              )}
+            </button>
             {canViewFinancials && (
               <button
                 type="button"
@@ -358,6 +414,8 @@ export default function Layout() {
         <Outlet
           context={{
             session,
+            theme,
+            setTheme,
             canManageTeam,
             canManageInsumos,
             canManageManutencao,
