@@ -47,7 +47,8 @@ body::before {
   background-color: #ffffff !important;
 }
 
-[data-theme='light'] .bg-chm-card {
+[data-theme='light'] .bg-chm-card,
+[data-theme='light'] [class*='bg-chm-card'] {
   background-color: #ffffff !important;
 }
 
@@ -66,6 +67,10 @@ body::before {
 [data-theme='light'] .text-chm-muted,
 [data-theme='light'] .text-slate-500 {
   color: #64748b !important;
+}
+
+[data-theme='light'] .text-chm-accent {
+  color: #2563eb !important;
 }
 
 [data-theme='light'] .bg-chm-accent,
