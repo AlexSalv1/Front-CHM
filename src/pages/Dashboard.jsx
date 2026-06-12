@@ -127,6 +127,7 @@ export default function Dashboard() {
   const [clientes, setClientes] = useState([]);
   const [metricas, setMetricas] = useState(null);
   const [assistantInput, setAssistantInput] = useState('');
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantMessages, setAssistantMessages] = useState([
     {
       role: 'assistant',
@@ -294,65 +295,6 @@ export default function Dashboard() {
         />
       </div>
 
-      <section className="rounded-md border border-slate-800 bg-chm-card p-5 shadow-xl shadow-black/10">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-chm-accent">
-              Assistente IA
-            </p>
-            <h3 className="mt-2 text-lg font-semibold">Ajuda rapida para navegar no CHM</h3>
-            <p className="mt-1 max-w-2xl text-sm text-chm-muted">
-              Pergunte sobre uma rotina do sistema e eu te levo para a tela mais provavel.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {['Ver clientes em risco', 'Criar usuario', 'Configurar feedback'].map((prompt) => (
-              <button
-                key={prompt}
-                type="button"
-                onClick={() => askAssistant(prompt)}
-                className="rounded-md border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-slate-800"
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="max-h-56 space-y-3 overflow-y-auto rounded-md border border-slate-800 bg-slate-950/55 p-3">
-            {assistantMessages.map((message, index) => (
-              <div
-                key={`${message.role}-${index}`}
-                className={`max-w-[92%] rounded-md px-3 py-2 text-sm ${
-                  message.role === 'user'
-                    ? 'ml-auto bg-chm-accent text-white'
-                    : 'border border-blue-500/20 bg-blue-500/10 text-slate-200'
-                }`}
-              >
-                {message.text}
-              </div>
-            ))}
-          </div>
-
-          <form onSubmit={handleAssistantSubmit} className="flex flex-col gap-3">
-            <textarea
-              value={assistantInput}
-              onChange={(event) => setAssistantInput(event.target.value)}
-              rows={4}
-              className="min-h-[112px] w-full resize-none rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
-              placeholder="Ex: como vejo clientes em risco?"
-            />
-            <button
-              type="submit"
-              className="rounded-md bg-chm-accent px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-600"
-            >
-              Perguntar
-            </button>
-          </form>
-        </div>
-      </section>
-
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
         <section className="rounded-md border border-slate-800 bg-chm-card p-5">
           <div className="mb-5 flex items-center justify-between">
@@ -451,6 +393,92 @@ export default function Dashboard() {
             </div>
           </section>
         </aside>
+      </div>
+
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+        {assistantOpen && (
+          <section className="w-[min(calc(100vw-2rem),390px)] rounded-md border border-slate-800 bg-chm-card shadow-2xl shadow-black/30">
+            <div className="flex items-start justify-between gap-3 border-b border-slate-800 p-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-chm-accent text-lg font-black text-white">
+                  IA
+                </span>
+                <div className="min-w-0">
+                  <h3 className="font-semibold">Assistente CHM</h3>
+                  <p className="truncate text-xs text-chm-muted">Posso te levar para a tela certa.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAssistantOpen(false)}
+                aria-label="Fechar assistente"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-slate-700 text-sm font-bold text-slate-300 transition hover:bg-slate-800 hover:text-white"
+              >
+                X
+              </button>
+            </div>
+
+            <div className="max-h-72 space-y-3 overflow-y-auto p-4">
+              {assistantMessages.map((message, index) => (
+                <div
+                  key={`${message.role}-${index}`}
+                  className={`max-w-[92%] rounded-md px-3 py-2 text-sm ${
+                    message.role === 'user'
+                      ? 'ml-auto bg-chm-accent text-white'
+                      : 'border border-blue-500/20 bg-blue-500/10 text-slate-200'
+                  }`}
+                >
+                  {message.text}
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t border-slate-800 p-4">
+              <div className="mb-3 flex flex-wrap gap-2">
+                {['Ver clientes em risco', 'Criar usuario', 'Configurar feedback'].map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    onClick={() => askAssistant(prompt)}
+                    className="rounded-md border border-slate-700 px-2.5 py-1.5 text-xs font-semibold text-slate-200 transition hover:bg-slate-800"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+              <form onSubmit={handleAssistantSubmit} className="flex gap-2">
+                <input
+                  value={assistantInput}
+                  onChange={(event) => setAssistantInput(event.target.value)}
+                  className="min-w-0 flex-1 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
+                  placeholder="Digite sua duvida"
+                />
+                <button
+                  type="submit"
+                  className="rounded-md bg-chm-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-600"
+                >
+                  Enviar
+                </button>
+              </form>
+            </div>
+          </section>
+        )}
+
+        {!assistantOpen && (
+          <button
+            type="button"
+            onClick={() => setAssistantOpen(true)}
+            className="group flex items-center gap-3 rounded-full border border-slate-800 bg-chm-card px-3 py-2 shadow-2xl shadow-black/25 transition hover:-translate-y-0.5 hover:border-chm-accent"
+            aria-label="Abrir assistente CHM"
+          >
+            <span className="hidden max-w-[180px] text-left text-xs font-medium text-slate-200 sm:block">
+              Precisa de ajuda?
+            </span>
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-chm-accent text-sm font-black text-white">
+              IA
+            </span>
+          </button>
+        )}
       </div>
     </div>
   );
