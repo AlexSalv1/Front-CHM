@@ -9,5 +9,6 @@ export default function useAppContext() {
     canViewFinancials: false,
     valuesHidden: false,
     maskValue: (value) => value,
+    refreshSession: async () => null,
   };
 }

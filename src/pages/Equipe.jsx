@@ -20,7 +20,7 @@ function parseApiError(err) {
 }
 
 export default function Equipe() {
-  const { session, canManageTeam } = useAppContext();
+  const { session, canManageTeam, refreshSession } = useAppContext();
   const [usuarios, setUsuarios] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
@@ -78,6 +78,7 @@ export default function Equipe() {
     try {
       await atualizarUsuarioEquipe(usuario.id, { ativo: !usuario.ativo });
       await loadEquipe();
+      await refreshSession();
     } catch (err) {
       setError(parseApiError(err));
     }
@@ -87,6 +88,7 @@ export default function Equipe() {
     try {
       await atualizarUsuarioEquipe(usuario.id, { podeVerFinanceiro: !usuario.podeVerFinanceiro });
       await loadEquipe();
+      await refreshSession();
     } catch (err) {
       setError(parseApiError(err));
     }
@@ -96,6 +98,7 @@ export default function Equipe() {
     try {
       await atualizarUsuarioEquipe(usuario.id, { podeGerenciarInsumos: !usuario.podeGerenciarInsumos });
       await loadEquipe();
+      await refreshSession();
     } catch (err) {
       setError(parseApiError(err));
     }
@@ -105,6 +108,7 @@ export default function Equipe() {
     try {
       await atualizarUsuarioEquipe(usuario.id, { podeGerenciarManutencao: !usuario.podeGerenciarManutencao });
       await loadEquipe();
+      await refreshSession();
     } catch (err) {
       setError(parseApiError(err));
     }

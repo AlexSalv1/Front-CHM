@@ -123,20 +123,28 @@ export default function Layout() {
   );
 
   const canManageTeam = session?.papel === 'GESTOR';
-  const canManageInsumos = canManageTeam || Boolean(session?.podeGerenciarInsumos);
-  const canManageManutencao = canManageTeam || Boolean(session?.podeGerenciarManutencao);
+  const canManageInsumos = Boolean(session?.podeGerenciarInsumos);
+  const canManageManutencao = Boolean(session?.podeGerenciarManutencao);
   const canViewFinancials = Boolean(session?.podeVerFinanceiro);
 
   useEffect(() => {
     let active = true;
 
-    verificarSessao()
-      .then((data) => {
+    async function loadSession(redirectOnFailure = true) {
+      try {
+        const data = await verificarSessao();
         if (active) setSession(data);
-      })
-      .catch(() => {
-        if (active) setSession(null);
-      });
+        return data;
+      } catch (err) {
+        if (active) {
+          setSession(null);
+          if (redirectOnFailure) navigate('/login', { replace: true });
+        }
+        return null;
+      }
+    }
+
+    loadSession(false);
 
     buscarBrandingEmpresa()
       .then((data) => {
@@ -156,12 +164,37 @@ export default function Layout() {
       setBranding(event.detail);
     }
 
+    function refreshWhenVisible() {
+      if (!document.hidden) loadSession();
+    }
+
+    const sessionInterval = window.setInterval(() => {
+      loadSession();
+    }, 30000);
+
     window.addEventListener('chm:branding-updated', handleBrandingUpdated);
+    window.addEventListener('focus', refreshWhenVisible);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
     return () => {
       active = false;
+      window.clearInterval(sessionInterval);
       window.removeEventListener('chm:branding-updated', handleBrandingUpdated);
+      window.removeEventListener('focus', refreshWhenVisible);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
     };
-  }, []);
+  }, [navigate]);
+
+  async function refreshSession() {
+    try {
+      const data = await verificarSessao();
+      setSession(data);
+      return data;
+    } catch (err) {
+      setSession(null);
+      navigate('/login', { replace: true });
+      return null;
+    }
+  }
 
   async function handleLogout() {
     try {
@@ -323,7 +356,18 @@ export default function Layout() {
       )}
 
       <main className={`mx-auto max-w-7xl px-3 py-4 transition-[padding] sm:px-5 sm:py-6 lg:px-8 ${hotbarOpen ? 'lg:pl-72' : ''}`}>
-        <Outlet context={{ session, canManageTeam, canManageInsumos, canManageManutencao, canViewFinancials, valuesHidden, maskValue }} />
+        <Outlet
+          context={{
+            session,
+            canManageTeam,
+            canManageInsumos,
+            canManageManutencao,
+            canViewFinancials,
+            valuesHidden,
+            maskValue,
+            refreshSession,
+          }}
+        />
       </main>
     </div>
   );

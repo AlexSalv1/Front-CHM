@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { buscarRelatorioContratos } from '../api/relatoriosApi';
 import LoadingSpinner from '../components/LoadingSpinner';
 import MetricCard from '../components/MetricCard';
+import useAppContext from '../hooks/useAppContext';
 
 function formatDate(value) {
   return new Intl.DateTimeFormat('pt-BR', {
@@ -11,12 +12,19 @@ function formatDate(value) {
 }
 
 export default function Contratos() {
+  const { session, canManageTeam } = useAppContext();
   const [periodo, setPeriodo] = useState(30);
   const [relatorio, setRelatorio] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    if (!session) return undefined;
+    if (!canManageTeam) {
+      setLoading(false);
+      return undefined;
+    }
+
     let active = true;
 
     async function load() {
@@ -36,7 +44,7 @@ export default function Contratos() {
     return () => {
       active = false;
     };
-  }, [periodo]);
+  }, [periodo, session?.id, canManageTeam]);
 
   const maxValue = useMemo(() => {
     if (!relatorio?.serie?.length) return 1;
@@ -47,6 +55,14 @@ export default function Contratos() {
       )
     );
   }, [relatorio]);
+
+  if (session && !canManageTeam) {
+    return (
+      <div className="rounded-md border border-slate-800 bg-chm-card p-6 text-sm text-chm-muted">
+        Seu usuario nao tem acesso ao relatorio de contratos.
+      </div>
+    );
+  }
 
   if (loading) return <LoadingSpinner label="Carregando contratos..." />;
 
