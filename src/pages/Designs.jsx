@@ -1,5 +1,5 @@
 // Arquivo: frontend/src/pages/Designs.jsx
-import { useOutletContext } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const designs = [
   {
@@ -113,10 +113,20 @@ function PreviewCard({ tokens, fonte }) {
 }
 
 export default function Designs() {
-  const { design, setDesign } = useOutletContext();
+  const [design, setDesignState] = useState(
+    () => window.localStorage.getItem('chm_design') || 'meridian'
+  );
+
+  useEffect(() => {
+    document.documentElement.dataset.design = design;
+    window.localStorage.setItem('chm_design', design);
+  }, [design]);
+
+  const setDesign = (id) => setDesignState(id);
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-chm-bg px-4 py-8 text-white sm:px-8">
+      <div className="mx-auto max-w-6xl space-y-6">
       <header className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight">Designs do projeto</h1>
         <p className="text-sm text-chm-muted">
@@ -179,6 +189,7 @@ export default function Designs() {
         Dica: depois de aplicar, navegue pelas telas (Inicio, Clientes, Contatos) para comparar cada design em uso
         real.
       </p>
+      </div>
     </div>
   );
 }

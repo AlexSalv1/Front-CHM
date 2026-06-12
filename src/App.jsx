@@ -21,6 +21,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/feedback/:token" element={<FeedbackPublico />} />
+      <Route path="/designs" element={<Designs />} />
       <Route
         element={
           <ProtectedRoute>
@@ -39,7 +40,6 @@ export default function App() {
         <Route path="/manutencao" element={<Manutencao />} />
         <Route path="/feedback" element={<Feedback />} />
         <Route path="/configuracoes" element={<Configuracoes />} />
-        <Route path="/designs" element={<Designs />} />
       </Route>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
