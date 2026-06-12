@@ -253,7 +253,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-transparent text-slate-100">
-      <nav className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/92 backdrop-blur">
+      <nav className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/92 backdrop-blur lg:fixed lg:inset-x-0">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-3 sm:px-5 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <button
@@ -410,7 +410,7 @@ export default function Layout() {
         </>
       )}
 
-      <main className={`mx-auto max-w-7xl px-3 py-4 transition-[padding] sm:px-5 sm:py-6 lg:px-8 ${hotbarOpen ? 'lg:pl-72' : ''}`}>
+      <main className={`mx-auto max-w-7xl px-3 py-4 transition-[padding] sm:px-5 sm:py-6 lg:px-8 lg:pt-[97px] ${hotbarOpen ? 'lg:pl-72' : ''}`}>
         <Outlet
           context={{
             session,
