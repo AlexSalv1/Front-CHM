@@ -6,12 +6,15 @@ export default {
     extend: {
       colors: {
         chm: {
-          bg: '#101418',
-          card: '#18212b',
-          accent: '#4f8cff',
-          muted: '#8a98a8',
-          whatsapp: '#25D366',
+          bg: 'var(--chm-bg, #101418)',
+          card: 'var(--chm-card, #18212b)',
+          accent: 'var(--chm-accent, #4f8cff)',
+          muted: 'var(--chm-muted, #8a98a8)',
+          whatsapp: 'var(--chm-whatsapp, #25D366)',
         },
+      },
+      fontFamily: {
+        sans: ['var(--chm-font, "Inter")', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
     },
   },

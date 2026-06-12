@@ -3,8 +3,51 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== Design presets (cores + tipografia) =====
+   Aplicados globalmente via [data-design] no <html>.
+   Todos sao temas "produtivos": alto contraste e densidade. */
+:root {
+  --chm-bg: #101418;
+  --chm-card: #18212b;
+  --chm-accent: #4f8cff;
+  --chm-muted: #8a98a8;
+  --chm-whatsapp: #25d366;
+  --chm-font: 'Inter';
+}
+
+/* Design 1 — Meridian: indigo + esmeralda, navy profundo, fonte Manrope */
+[data-design='meridian'] {
+  --chm-bg: #0b1020;
+  --chm-card: #141b30;
+  --chm-accent: #6366f1;
+  --chm-muted: #8b94b3;
+  --chm-whatsapp: #34d399;
+  --chm-font: 'Manrope';
+}
+
+/* Design 2 — Graphite: grafite neutro + teal, ultra denso, fonte IBM Plex Sans */
+[data-design='graphite'] {
+  --chm-bg: #131517;
+  --chm-card: #1c1f23;
+  --chm-accent: #2dd4bf;
+  --chm-muted: #9aa3ad;
+  --chm-whatsapp: #25d366;
+  --chm-font: 'IBM Plex Sans';
+}
+
+/* Design 3 — Ember: laranja quente + grafite, fonte Inter */
+[data-design='ember'] {
+  --chm-bg: #15110e;
+  --chm-card: #211a14;
+  --chm-accent: #f97316;
+  --chm-muted: #b39d8a;
+  --chm-whatsapp: #25d366;
+  --chm-font: 'Inter';
+}
+
 body {
   @apply bg-chm-bg text-white antialiased;
+  font-family: var(--chm-font), ui-sans-serif, system-ui, sans-serif;
 }
 
 html,

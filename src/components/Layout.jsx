@@ -194,6 +194,9 @@ export default function Layout() {
   const [theme, setTheme] = useState(
     () => window.localStorage.getItem('chm_theme') || 'dark'
   );
+  const [design, setDesign] = useState(
+    () => window.localStorage.getItem('chm_design') || 'meridian'
+  );
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantHintVisible, setAssistantHintVisible] = useState(true);
   const [assistantInput, setAssistantInput] = useState('');
@@ -220,6 +223,11 @@ export default function Layout() {
     document.documentElement.style.colorScheme = theme === 'light' ? 'light' : 'dark';
     window.localStorage.setItem('chm_theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.dataset.design = design;
+    window.localStorage.setItem('chm_design', design);
+  }, [design]);
 
   useEffect(() => {
     const hintTimer = window.setTimeout(() => {
@@ -398,6 +406,7 @@ export default function Layout() {
     { to: '/manutencao', label: 'Manutencao', icon: 'manutencao', allowed: canManageManutencao },
     { to: '/feedback', label: 'Feedback', icon: 'feedback', allowed: canManageTeam },
     { to: '/configuracoes', label: 'Marca', icon: 'marca', allowed: canManageTeam },
+    { to: '/designs', label: 'Designs', icon: 'marca', allowed: true },
   ].filter((item) => item.allowed);
 
   return (
@@ -565,6 +574,8 @@ export default function Layout() {
             session,
             theme,
             setTheme,
+            design,
+            setDesign,
             canManageTeam,
             canManageInsumos,
             canManageManutencao,

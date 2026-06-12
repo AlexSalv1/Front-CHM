@@ -14,6 +14,7 @@ import Insumos from './pages/Insumos';
 import Manutencao from './pages/Manutencao';
 import Feedback from './pages/Feedback';
 import FeedbackPublico from './pages/FeedbackPublico';
+import Designs from './pages/Designs';
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="/manutencao" element={<Manutencao />} />
         <Route path="/feedback" element={<Feedback />} />
         <Route path="/configuracoes" element={<Configuracoes />} />
+        <Route path="/designs" element={<Designs />} />
       </Route>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
