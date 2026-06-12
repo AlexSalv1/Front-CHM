@@ -22,8 +22,8 @@ export default function Layout() {
   );
 
   const canManageTeam = session?.papel === 'GESTOR';
-  const canManageInsumos = Boolean(session?.podeGerenciarInsumos);
-  const canManageManutencao = Boolean(session?.podeGerenciarManutencao);
+  const canManageInsumos = canManageTeam || Boolean(session?.podeGerenciarInsumos);
+  const canManageManutencao = canManageTeam || Boolean(session?.podeGerenciarManutencao);
   const canViewFinancials = Boolean(session?.podeVerFinanceiro);
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-transparent text-slate-100">
       <nav className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/92 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-3 py-3 sm:px-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-3 py-3 sm:px-5 lg:flex-row lg:items-start lg:justify-between lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <div
               className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md text-sm font-black text-white sm:h-10 sm:w-10"
@@ -105,7 +105,7 @@ export default function Layout() {
               <p className="truncate text-xs text-chm-muted">Acompanhe clientes com mais cuidado</p>
             </div>
           </div>
-          <div className="-mx-3 flex items-center gap-2 overflow-x-auto px-3 pb-1 sm:-mx-5 sm:px-5 lg:mx-0 lg:px-0 lg:pb-0">
+          <div className="-mx-3 flex items-center gap-2 overflow-x-auto px-3 pb-1 sm:-mx-5 sm:px-5 lg:mx-0 lg:flex-1 lg:flex-wrap lg:justify-end lg:overflow-visible lg:px-0 lg:pb-0">
             <NavLink to="/dashboard" className={navClass}>
               Inicio
             </NavLink>
