@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Assistente CHM">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0ea5e9"/>
+      <stop offset="0.48" stop-color="#0b5bd3"/>
+      <stop offset="1" stop-color="#071457"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="0.5" stop-color="#b9d2e8"/>
+      <stop offset="1" stop-color="#708ca9"/>
+    </linearGradient>
+    <linearGradient id="face" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#102849"/>
+      <stop offset="1" stop-color="#071426"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <path d="M36 420c70 34 366 34 440-2" fill="none" stroke="#37d9ff" stroke-opacity=".18" stroke-width="12"/>
+  <g transform="translate(0 4)">
+    <path d="M125 174c-26 4-47 31-47 73s21 69 47 73z" fill="url(#metal)"/>
+    <path d="M387 174c26 4 47 31 47 73s-21 69-47 73z" fill="url(#metal)"/>
+    <path d="M133 127c0-54 246-54 246 0v171c0 80-47 129-123 129s-123-49-123-129z" fill="url(#metal)"/>
+    <path d="M164 166c0-46 184-46 184 0v104c0 56-35 89-92 89s-92-33-92-89z" fill="url(#face)"/>
+    <path d="M177 147c32-18 126-18 158 0" fill="none" stroke="#ecfeff" stroke-opacity=".7" stroke-width="11" stroke-linecap="round"/>
+    <path d="M211 95c20 12 70 12 90 0" fill="none" stroke="#ecfeff" stroke-width="10" stroke-linecap="round"/>
+    <path d="M208 250c-5-21-46-21-52 0" fill="none" stroke="#76f6ff" stroke-width="18" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M356 250c-6-21-47-21-52 0" fill="none" stroke="#76f6ff" stroke-width="18" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M214 302c20 28 66 28 86 0" fill="none" stroke="#76f6ff" stroke-width="15" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M231 216h50m-25-25v50m-34-9 68-33m-68 0 68 33" stroke="#91f7ff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="222" cy="216" r="4" fill="#91f7ff"/>
+    <circle cx="290" cy="216" r="4" fill="#91f7ff"/>
+    <circle cx="256" cy="191" r="4" fill="#91f7ff"/>
+    <circle cx="256" cy="241" r="4" fill="#91f7ff"/>
+    <path d="M194 164h38m88 0h22" stroke="#64f2ff" stroke-width="9" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M130 132 95 70m287 62 35-62" stroke="#b8d5ef" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="90" cy="61" r="16" fill="#8ff8ff" filter="url(#glow)"/>
+    <circle cx="422" cy="61" r="16" fill="#8ff8ff" filter="url(#glow)"/>
+    <path d="M155 432c12-46 190-46 202 0" fill="url(#metal)"/>
+    <path d="M170 427h172" stroke="#eaf6ff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>

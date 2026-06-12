@@ -4,6 +4,82 @@ import { logout } from '../api/authApi';
 import { verificarSessao } from '../api/authSessionApi';
 import { buscarBrandingEmpresa } from '../api/empresaApi';
 
+const assistantTopics = [
+  {
+    label: 'Clientes em risco',
+    path: '/clientes',
+    keywords: ['cliente', 'clientes', 'risco', 'health', 'score', 'saude', 'carteira', 'mensalidade'],
+    reply:
+      'Para analisar clientes em risco, abra Clientes. La voce ve health score, motivo do risco, historico e mensagem sugerida.',
+  },
+  {
+    label: 'Contatos',
+    path: '/tarefas',
+    keywords: ['contato', 'contatos', 'whatsapp', 'mensagem', 'tarefa', 'ligar', 'retencao'],
+    reply:
+      'Para acompanhar abordagens e mensagens, va para Contatos. Essa area ajuda a organizar quem precisa ser chamado primeiro.',
+  },
+  {
+    label: 'Equipe',
+    path: '/equipe',
+    requires: 'team',
+    keywords: ['equipe', 'usuario', 'usuarios', 'permissao', 'permissoes', 'funcionario', 'funcionarios', 'atendente', 'acesso'],
+    reply:
+      'Para criar usuarios, ajustar permissoes ou gerenciar funcionarios, use Equipe. Essa tela centraliza acessos e quadro operacional.',
+  },
+  {
+    label: 'Executivo',
+    path: '/executivo',
+    requires: 'team',
+    keywords: ['executivo', 'dono', 'gestor', 'receita', 'financeiro', 'indicador', 'indicadores', 'perda', 'impacto'],
+    reply:
+      'Para uma visao rapida de indicadores do dono ou gestor, va para Executivo. Ali ficam numeros principais e impacto financeiro.',
+  },
+  {
+    label: 'Contratos',
+    path: '/contratos',
+    requires: 'team',
+    keywords: ['contrato', 'contratos', 'cancelamento', 'cancelados', 'renovacao', 'renovacoes'],
+    reply:
+      'Para ver contratos novos, mantidos e cancelados, abra Contratos. Essa tela ajuda a enxergar movimento da carteira.',
+  },
+  {
+    label: 'Insumos',
+    path: '/insumos',
+    requires: 'insumos',
+    keywords: ['insumo', 'insumos', 'compra', 'compras', 'estoque', 'material', 'materiais', 'fornecedor'],
+    reply: 'Para controlar compras, estoque e itens importantes da operacao, va para Insumos.',
+  },
+  {
+    label: 'Manutencao',
+    path: '/manutencao',
+    requires: 'manutencao',
+    keywords: ['manutencao', 'equipamento', 'equipamentos', 'defeito', 'quebrado', 'reparo', 'tecnico'],
+    reply: 'Para registrar equipamentos com defeito e acompanhar reparos, va para Manutencao.',
+  },
+  {
+    label: 'Feedback',
+    path: '/feedback',
+    requires: 'team',
+    keywords: ['feedback', 'pesquisa', 'pesquisas', 'satisfacao', 'email', 'anonimo', 'anonima'],
+    reply: 'Para configurar pesquisas por e-mail e acompanhar respostas anonimas, abra Feedback.',
+  },
+  {
+    label: 'Marca',
+    path: '/configuracoes',
+    requires: 'team',
+    keywords: ['marca', 'logo', 'academia', 'nome', 'cor', 'branding', 'visual', 'tema'],
+    reply: 'Para alterar nome, logo e cor da academia, va para Marca.',
+  },
+];
+
+function normalizeText(value) {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
 const navClass = ({ isActive }) =>
   `flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition ${
     isActive ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
@@ -118,6 +194,14 @@ export default function Layout() {
   const [theme, setTheme] = useState(
     () => window.localStorage.getItem('chm_theme') || 'dark'
   );
+  const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantInput, setAssistantInput] = useState('');
+  const [assistantMessages, setAssistantMessages] = useState([
+    {
+      role: 'assistant',
+      text: 'Oi, eu sou o assistente CHM. Se tiver duvida, eu te levo para a tela certa.',
+    },
+  ]);
   const [valuesHidden, setValuesHidden] = useState(
     () => window.localStorage.getItem('chm_values_hidden') === 'true'
   );
@@ -236,6 +320,61 @@ export default function Layout() {
   function maskValue(value) {
     if (!canViewFinancials || valuesHidden) return 'Oculto';
     return value;
+  }
+
+  function canOpenTopic(topic) {
+    if (topic.requires === 'team') return canManageTeam;
+    if (topic.requires === 'insumos') return canManageInsumos;
+    if (topic.requires === 'manutencao') return canManageManutencao;
+    return true;
+  }
+
+  function answerAssistant(rawQuestion) {
+    const question = normalizeText(rawQuestion);
+    const topic = assistantTopics.find((item) =>
+      item.keywords.some((keyword) => question.includes(keyword))
+    );
+
+    if (!topic) {
+      return {
+        text:
+          'Ainda nao encontrei uma pagina exata para essa duvida. Tente citar clientes, equipe, insumos, manutencao, feedback, contratos ou marca.',
+      };
+    }
+
+    if (!canOpenTopic(topic)) {
+      return {
+        text: `Essa area existe em ${topic.label}, mas seu acesso atual nao libera essa pagina. Peca para um gestor habilitar essa permissao em Equipe.`,
+      };
+    }
+
+    return {
+      text: `${topic.reply} Vou abrir essa pagina agora.`,
+      path: topic.path,
+    };
+  }
+
+  function askAssistant(question) {
+    const answer = answerAssistant(question);
+    setAssistantOpen(true);
+    setAssistantMessages((current) => [
+      ...current,
+      { role: 'user', text: question },
+      { role: 'assistant', text: answer.text },
+    ]);
+
+    if (answer.path) {
+      window.setTimeout(() => navigate(answer.path), 650);
+    }
+  }
+
+  function handleAssistantSubmit(event) {
+    event.preventDefault();
+    const question = assistantInput.trim();
+    if (!question) return;
+
+    askAssistant(question);
+    setAssistantInput('');
   }
 
   const navItems = [
@@ -426,6 +565,96 @@ export default function Layout() {
           }}
         />
       </main>
+
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+        {assistantOpen && (
+          <section className="w-[min(calc(100vw-2rem),390px)] rounded-md border border-slate-800 bg-chm-card shadow-2xl shadow-black/30">
+            <div className="flex items-start justify-between gap-3 border-b border-slate-800 p-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <img
+                  src="/assistant-bot.svg"
+                  alt=""
+                  className="h-11 w-11 shrink-0 rounded-md object-cover"
+                />
+                <div className="min-w-0">
+                  <h3 className="font-semibold">Assistente CHM</h3>
+                  <p className="truncate text-xs text-chm-muted">Posso te ajudar com o sistema.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAssistantOpen(false)}
+                aria-label="Fechar assistente"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-slate-700 text-sm font-bold text-slate-300 transition hover:bg-slate-800 hover:text-white"
+              >
+                X
+              </button>
+            </div>
+
+            <div className="max-h-72 space-y-3 overflow-y-auto p-4">
+              {assistantMessages.map((message, index) => (
+                <div
+                  key={`${message.role}-${index}`}
+                  className={`max-w-[92%] rounded-md px-3 py-2 text-sm ${
+                    message.role === 'user'
+                      ? 'ml-auto bg-chm-accent text-white'
+                      : 'border border-blue-500/20 bg-blue-500/10 text-slate-200'
+                  }`}
+                >
+                  {message.text}
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t border-slate-800 p-4">
+              <div className="mb-3 flex flex-wrap gap-2">
+                {['Ver clientes em risco', 'Criar usuario', 'Configurar feedback'].map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    onClick={() => askAssistant(prompt)}
+                    className="rounded-md border border-slate-700 px-2.5 py-1.5 text-xs font-semibold text-slate-200 transition hover:bg-slate-800"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+              <form onSubmit={handleAssistantSubmit} className="flex gap-2">
+                <input
+                  value={assistantInput}
+                  onChange={(event) => setAssistantInput(event.target.value)}
+                  className="min-w-0 flex-1 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-chm-accent"
+                  placeholder="Digite sua duvida"
+                />
+                <button
+                  type="submit"
+                  className="rounded-md bg-chm-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-600"
+                >
+                  Enviar
+                </button>
+              </form>
+            </div>
+          </section>
+        )}
+
+        {!assistantOpen && (
+          <button
+            type="button"
+            onClick={() => setAssistantOpen(true)}
+            className="group flex items-center gap-3 rounded-full border border-slate-800 bg-chm-card px-3 py-2 shadow-2xl shadow-black/25 transition hover:-translate-y-0.5 hover:border-chm-accent"
+            aria-label="Abrir assistente CHM"
+          >
+            <span className="hidden max-w-[180px] text-left text-xs font-medium text-slate-200 sm:block">
+              Alguma duvida?
+            </span>
+            <img
+              src="/assistant-bot.svg"
+              alt=""
+              className="h-12 w-12 rounded-full object-cover"
+            />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
