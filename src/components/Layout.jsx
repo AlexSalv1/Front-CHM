@@ -216,9 +216,28 @@ export default function Layout() {
               onClick={toggleHotbar}
               title={hotbarOpen ? 'Ocultar hotbar' : 'Abrir hotbar'}
               aria-label={hotbarOpen ? 'Ocultar hotbar' : 'Abrir hotbar'}
-              className="flex h-9 min-w-9 shrink-0 items-center justify-center rounded-md border border-slate-700 px-3 text-sm font-bold text-slate-300 transition hover:bg-slate-800 hover:text-white sm:h-10"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-700 text-slate-300 transition hover:bg-slate-800 hover:text-white sm:h-10 sm:w-auto sm:px-3"
             >
-              {hotbarOpen ? 'X' : 'Menu'}
+              {hotbarOpen ? (
+                <span className="font-bold">X</span>
+              ) : (
+                <>
+                  <svg
+                    className="h-4 w-4 sm:mr-2"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 7h16" />
+                    <path d="M4 12h16" />
+                    <path d="M4 17h16" />
+                  </svg>
+                  <span className="hidden font-bold sm:inline">Menu</span>
+                </>
+              )}
             </button>
             <div
               className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md text-sm font-black text-white sm:h-10 sm:w-10"
@@ -231,10 +250,10 @@ export default function Layout() {
               )}
             </div>
             <div className="min-w-0">
-              <h1 className="max-w-[180px] truncate text-base font-bold tracking-tight sm:max-w-[260px] sm:text-lg">
+              <h1 className="max-w-[120px] truncate text-base font-bold tracking-tight sm:max-w-[260px] sm:text-lg">
                 {branding.nomeComercial || 'CHM'}
               </h1>
-              <p className="truncate text-xs text-chm-muted">Acompanhe clientes com mais cuidado</p>
+              <p className="hidden truncate text-xs text-chm-muted min-[420px]:block">Acompanhe clientes com mais cuidado</p>
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">

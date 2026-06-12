@@ -7,6 +7,18 @@ body {
   @apply bg-chm-bg text-white antialiased;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body::before {
   content: '';
   position: fixed;
@@ -26,7 +38,7 @@ input,
 select,
 textarea,
 button {
-  font-size: 16px;
+  font-size: 16px !important;
 }
 
 @media (min-width: 640px) {
@@ -34,14 +46,22 @@ button {
   select,
   textarea,
   button {
-    font-size: 14px;
+    font-size: 14px !important;
   }
 }
 
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
+  max-width: 100%;
 }
 
 table {
   min-width: 680px;
+}
+
+img,
+svg,
+canvas,
+video {
+  max-width: 100%;
 }

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { buscarConfigIntegracao } from '../api/integracoesApi';
 import { buscarRelatorioContratos } from '../api/relatoriosApi';
 import LoadingSpinner from '../components/LoadingSpinner';
 import MetricCard from '../components/MetricCard';
@@ -14,27 +13,8 @@ function formatDate(value) {
 export default function Contratos() {
   const [periodo, setPeriodo] = useState(30);
   const [relatorio, setRelatorio] = useState(null);
-  const [integracao, setIntegracao] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadIntegracao() {
-      try {
-        const integracaoData = await buscarConfigIntegracao();
-        if (active) setIntegracao(integracaoData);
-      } catch {
-        if (active) setIntegracao(null);
-      }
-    }
-
-    loadIntegracao();
-    return () => {
-      active = false;
-    };
-  }, []);
 
   useEffect(() => {
     let active = true;
@@ -156,7 +136,7 @@ export default function Contratos() {
             </div>
 
             <div className="overflow-x-auto">
-              <div className="flex min-w-[760px] items-end gap-2 border-b border-slate-800 pb-4">
+              <div className="flex min-w-[560px] items-end gap-2 border-b border-slate-800 pb-4 sm:min-w-[760px]">
                 {relatorio.serie.map((item) => (
                   <div key={item.data} className="flex flex-1 flex-col items-center gap-2">
                     <div className="flex h-44 w-full items-end justify-center gap-1 rounded-sm bg-slate-950/45 px-1 pb-1">
@@ -182,39 +162,6 @@ export default function Contratos() {
               </div>
             </div>
           </section>
-
-          {integracao && (
-            <section className="rounded-md border border-slate-800/80 bg-chm-card/95 p-5 shadow-xl shadow-black/10">
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold">Dados para conectar sistemas externos</h3>
-                <p className="text-sm text-chm-muted">
-                  Use estes dados no sistema da catraca, financeiro ou outro app que envia eventos.
-                </p>
-              </div>
-              <div className="grid gap-3 lg:grid-cols-2">
-                <div className="rounded-md bg-slate-950/70 p-3">
-                  <p className="text-xs text-chm-muted">Webhook</p>
-                  <p className="mt-1 break-all text-sm font-medium">{integracao.webhookUrl}</p>
-                </div>
-                <div className="rounded-md bg-slate-950/70 p-3">
-                  <p className="text-xs text-chm-muted">Tenant ID</p>
-                  <p className="mt-1 break-all text-sm font-medium">{integracao.tenantId}</p>
-                </div>
-                <div className="rounded-md bg-slate-950/70 p-3">
-                  <p className="text-xs text-chm-muted">Header de assinatura</p>
-                  <p className="mt-1 text-sm font-medium">{integracao.signatureHeader}</p>
-                </div>
-                <div className="rounded-md bg-slate-950/70 p-3">
-                  <p className="text-xs text-chm-muted">Header da empresa</p>
-                  <p className="mt-1 text-sm font-medium">{integracao.tenantHeader}</p>
-                </div>
-              </div>
-              <div className="mt-3 rounded-md bg-slate-950/70 p-3">
-                <p className="text-xs text-chm-muted">Eventos aceitos</p>
-                <p className="mt-1 text-sm font-medium">{integracao.tiposEvento.join(', ')}</p>
-              </div>
-            </section>
-          )}
 
           <section className="rounded-md border border-slate-800/80 bg-chm-card/95 shadow-xl shadow-black/10">
             <div className="border-b border-slate-800 p-5">
