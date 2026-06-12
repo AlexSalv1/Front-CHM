@@ -195,6 +195,7 @@ export default function Layout() {
     () => window.localStorage.getItem('chm_theme') || 'dark'
   );
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantHintVisible, setAssistantHintVisible] = useState(true);
   const [assistantInput, setAssistantInput] = useState('');
   const [assistantMessages, setAssistantMessages] = useState([
     {
@@ -219,6 +220,14 @@ export default function Layout() {
     document.documentElement.style.colorScheme = theme === 'light' ? 'light' : 'dark';
     window.localStorage.setItem('chm_theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    const hintTimer = window.setTimeout(() => {
+      setAssistantHintVisible(false);
+    }, 6500);
+
+    return () => window.clearTimeout(hintTimer);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -357,6 +366,7 @@ export default function Layout() {
   function askAssistant(question) {
     const answer = answerAssistant(question);
     setAssistantOpen(true);
+    setAssistantHintVisible(false);
     setAssistantMessages((current) => [
       ...current,
       { role: 'user', text: question },
@@ -640,11 +650,18 @@ export default function Layout() {
         {!assistantOpen && (
           <button
             type="button"
-            onClick={() => setAssistantOpen(true)}
+            onClick={() => {
+              setAssistantOpen(true);
+              setAssistantHintVisible(false);
+            }}
             className="group flex items-center gap-3 rounded-full border border-slate-800 bg-chm-card px-3 py-2 shadow-2xl shadow-black/25 transition hover:-translate-y-0.5 hover:border-chm-accent"
             aria-label="Abrir assistente CHM"
           >
-            <span className="hidden max-w-[180px] text-left text-xs font-medium text-slate-200 sm:block">
+            <span
+              className={`hidden overflow-hidden whitespace-nowrap text-left text-xs font-medium text-slate-200 transition-all duration-500 sm:block ${
+                assistantHintVisible ? 'max-w-[180px] opacity-100' : 'max-w-0 opacity-0'
+              }`}
+            >
               Alguma duvida?
             </span>
             <img
