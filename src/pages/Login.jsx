@@ -109,20 +109,20 @@ export default function Login() {
     <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-7xl items-center gap-6 lg:grid-cols-[minmax(0,1fr)_460px] lg:gap-10">
         <section className="hidden chm-surface-strong p-8 lg:block">
-          <p className="chm-kicker">Customer Health Management</p>
+          <p className="chm-kicker">CHM | Gestão de Retenção</p>
           <h1 className="mt-4 max-w-xl text-4xl font-semibold tracking-tight text-chm-text xl:text-5xl">
-            Uma central de retenção com cara de produto sério.
+            Centralize retenção, operação e acesso em uma única plataforma.
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-6 text-chm-muted xl:text-base">
-            Acompanhe clientes em risco, equipe, insumos, manutenção e feedback em um ambiente mais limpo,
-            organizado e pronto para operação diária.
+            Acompanhe clientes em risco, equipe, insumos, manutenção e feedback em um ambiente claro, organizado
+            e pronto para a rotina operacional.
           </p>
 
           <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
             {[
-              ['Retenção', 'Health score, risco e próximos passos'],
+              ['Retenção', 'Priorize clientes em risco e próximos passos'],
               ['Operação', 'Equipe, insumos e manutenção em um só lugar'],
-              ['Acesso', 'Permissões por papel e visual por academia'],
+              ['Acesso', 'Controle permissões por perfil e unidade'],
             ].map(([title, copy]) => (
               <div key={title} className="chm-surface-soft p-4">
                 <p className="text-sm font-semibold text-chm-text">{title}</p>
@@ -132,7 +132,7 @@ export default function Login() {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-2">
-            {['Dashboard executivo', 'Hotbar produtiva', 'Assistente no canto', 'Modo claro e escuro'].map((item) => (
+            {['Visão executiva', 'Fluxos operacionais', 'Assistente contextual', 'Tema claro e escuro'].map((item) => (
               <span key={item} className="chm-chip">
                 {item}
               </span>
@@ -143,9 +143,9 @@ export default function Login() {
         <section className="chm-surface-strong p-6 sm:p-8">
           <div className="mb-6 flex items-center justify-between gap-3">
             <div>
-              <p className="chm-kicker">Acesso do Gestor</p>
+              <p className="chm-kicker">Área do Gestor</p>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-chm-text">
-                {mode === 'login' ? 'Entrar na conta' : 'Criar nova academia'}
+                {mode === 'login' ? 'Entrar na plataforma' : 'Criar nova conta'}
               </h2>
             </div>
             <button
@@ -185,7 +185,7 @@ export default function Login() {
                   label="Nome da empresa"
                   name="nomeEmpresa"
                   error={fieldError('nomeEmpresa')}
-                  hint="Use o nome comercial da academia."
+                  hint="Use o nome comercial da empresa."
                 >
                   <input
                     id="nomeEmpresa"
